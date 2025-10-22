@@ -55,7 +55,7 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
    - **🍿 Surprise Me!** - Triggers slot animation and selects random unwatched item
    - **🎞️ Show List** - Opens normal playlist view
 3. Click "Surprise Me!" to watch the animation
-4. Click "▶️ Watch Now" to navigate to the selected item
+4. Click "🎬 Play it!" to navigate to the selected item
 
 **Tip:** Enable browser sound to hear the satisfying audio ticks!
 
