@@ -1,13 +1,15 @@
-# 🎰 Jellyfin-Roulette
-
-**A Jellyfin plugin that adds a slot machine animation when selecting random items from playlists.**
-
-Click a playlist, hit "Surprise Me," and watch as movie posters spin past before landing on your next unwatched item — complete with smooth animations, audio ticks, and confetti celebration!
-
+# Jellyfin-Roulette
+ ![plugin banner](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteIconHeader.png) 
+ 
 ![Version](https://img.shields.io/badge/version-0.9.0-blue)
 ![Jellyfin](https://img.shields.io/badge/jellyfin-10.8%2B-purple)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
+
+**🎰 A Jellyfin plugin that plays a random item from your playlists.**
+
+Click a playlist, hit "Surprise Me," and watch as movie posters spin past before landing on your next unwatched item!
+
 
 ## 📦 Features
 
