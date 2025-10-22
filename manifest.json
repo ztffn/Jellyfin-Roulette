@@ -1,0 +1,21 @@
+[
+  {
+    "guid": "a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "name": "Jellyfin-Roulette",
+    "description": "A Jellyfin plugin that intercepts playlist clicks and displays a modal with two options: play a random unwatched item with a slot machine animation, or view the normal playlist. Features dynamic resize, audio ticks, confetti celebration, and glassmorphism UI.",
+    "overview": "Transform playlist browsing into an exciting slot machine experience with smooth animations and audio feedback",
+    "owner": "ztffn",
+    "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/ztffn/Jellyfin-Roulette/main/images/icon.png",
+    "versions": [
+      {
+        "version": "0.9.0.0",
+        "changelog": "Initial public release with slot machine animation, dynamic container resize, audio feedback, and confetti effects",
+        "targetAbi": "10.8.0.0",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.0/Jellyfin.Plugin.PlaylistModal.zip",
+        "checksum": "PLACEHOLDER_CHECKSUM",
+        "timestamp": "2025-10-22T00:00:00Z"
+      }
+    ]
+  }
+]
