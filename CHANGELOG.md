@@ -5,6 +5,20 @@ All notable changes to Jellyfin-Roulette will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2025-10-22
+
+### Bug Fixes
+
+- **Fixed keyboard Enter key support** - Added autofocus to buttons and proper focus states
+- **Fixed "Show List" navigation** - Now correctly navigates to playlist details with serverId parameter
+- **Added stylish focus indicators** - Blue glow effect on focused buttons matching theme
+
+### Technical Changes
+
+- Added `autofocus` attribute to "Surprise Me!" and "Watch Now" buttons
+- Added CSS focus styles with blue glow: `box-shadow: 0 0 0 3px rgba(67, 177, 236, 0.4)`
+- Updated `handleShowList()` to use correct URL pattern: `/web/index.html#!/details?id={playlistId}&serverId={serverId}`
+
 ## [0.9.0] - 2025-10-22
 
 ### Initial Public Release
@@ -55,6 +69,6 @@ Public announcement and first stable release after community testing.
 
 ---
 
-**Current Version**: v0.9.0
-**Status**: Initial Public Release
+**Current Version**: v0.9.1
+**Status**: Bug Fix Release
 **Repository**: https://github.com/ztffn/Jellyfin-Roulette
