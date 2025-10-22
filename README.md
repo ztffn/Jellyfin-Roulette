@@ -21,6 +21,9 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 - **Responsive design** - Works on desktop and mobile
 - **Non-invasive** - JavaScript injection pattern, doesn't modify Jellyfin core files
 
+## 🎥 Preview
+ ![usage gif](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteDemo.gif) 
+ 
 ## 🛠️ Installation
 
 ### Option 1: Install via Plugin Repository (Recommended)
@@ -58,7 +61,7 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 
 ## 🔄 Compatibility
 
-- **Jellyfin**: 10.8.0 and above
+- **Jellyfin**: 10.8.0 and above (⚠️ Not yet tested on 10.11)
 - **Platform**: Docker (Linux), Native Linux, Windows, macOS
 - **Browsers**: Chrome, Firefox, Safari, Edge
 - **Mobile**: Responsive design for all screen sizes
@@ -69,7 +72,7 @@ MIT License - See [LICENSE](LICENSE) file for details
 
 ## 🙏 Acknowledgments
 
-Built with [jellyfin-plugin-template](https://github.com/jellyfin/jellyfin-plugin-template) and inspired by [jellyfin-plugin-custom-javascript](https://github.com/johnpc/jellyfin-plugin-custom-javascript) injection pattern.
+Built with 🎲 for the Jellyfin Community using the [jellyfin-plugin-template](https://github.com/jellyfin/jellyfin-plugin-template) and inspired by [jellyfin-plugin-custom-javascript](https://github.com/johnpc/jellyfin-plugin-custom-javascript) injection pattern.
 
 ---
 
