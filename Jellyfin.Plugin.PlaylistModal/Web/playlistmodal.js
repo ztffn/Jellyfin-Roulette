@@ -448,6 +448,11 @@
         const showListBtn = document.getElementById('playlistModalShowListBtn');
         const imgA = document.getElementById('playlistModalImgA');
 
+		// Manually focus primary action (autofocus is unreliable on dynamic elements)
+		requestAnimationFrame(() => {
+			try { surpriseBtn && surpriseBtn.focus({ preventScroll: true }); } catch (_) { /* no-op */ }
+		});
+
         // Set initial image to playlist cover
         if (playlistInfo && playlistInfo.imageUrl) {
             imgA.src = playlistInfo.imageUrl;
@@ -791,22 +796,46 @@
         // Confetti
         burstConfetti();
 
+<<<<<<< HEAD
         // Show "Watch Now" button
         controls.innerHTML = `
             <button class="playlist-modal-btn" id="playlistModalWatchBtn" autofocus>▶️ Watch Now</button>
             <button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">✕ Close</button>
         `;
+=======
+		// Show final action buttons
+		controls.innerHTML = `
+			<button class="playlist-modal-btn" id="playlistModalWatchBtn">🎬 Play it!</button>
+			<button class="playlist-modal-btn" id="playlistModalRerollBtn">🎲 Reroll</button>
+			<button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">✕ Close</button>
+		`;
+>>>>>>> e62953f (Modal UX: focus management, 🎲 Reroll, and label update to 🎬 Play it!; close label tweaked)
 
         const watchBtn = document.getElementById('playlistModalWatchBtn');
+		const rerollBtn = document.getElementById('playlistModalRerollBtn');
         const closeBtn = document.getElementById('playlistModalCloseBtn');
 
         watchBtn.addEventListener('click', () => {
             navigateToItem(winner.Id);
         });
 
+		rerollBtn.addEventListener('click', () => {
+			// Prepare for another roll
+			heading.classList.remove('show');
+			// Clear controls during reroll to avoid accidental clicks
+			controls.innerHTML = '';
+			// Start animation again using existing unwatchedItems
+			runSlotAnimation();
+		});
+
         closeBtn.addEventListener('click', () => {
             closeModal();
         });
+
+		// Move focus to the new primary action
+		requestAnimationFrame(() => {
+			try { watchBtn && watchBtn.focus({ preventScroll: true }); } catch (_) { /* no-op */ }
+		});
     }
 
     /**
