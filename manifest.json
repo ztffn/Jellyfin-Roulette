@@ -13,8 +13,8 @@
         "changelog": "Initial public release with slot machine animation, dynamic container resize, audio feedback, and confetti effects",
         "targetAbi": "10.8.0.0",
         "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.0/Jellyfin.Plugin.PlaylistModal.zip",
-        "checksum": "PLACEHOLDER_CHECKSUM",
-        "timestamp": "2025-10-22T00:00:00Z"
+        "checksum": "dc1c1f911f650231742fbd9c93747fc0",
+        "timestamp": "2025-10-22T11:52:14Z"
       }
     ]
   }
