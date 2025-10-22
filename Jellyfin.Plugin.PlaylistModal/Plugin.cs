@@ -9,6 +9,7 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Jellyfin.Plugin.PlaylistModal;
 
@@ -121,9 +122,31 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         using var reader = new StreamReader(stream);
         var jsContent = reader.ReadToEnd();
 
-        // Create the script tag to inject
+        // Build client config object from plugin configuration
+        var cfg = new
+        {
+            TotalDurationMs = Configuration.TotalDurationMs,
+            MinIntervalMs = Configuration.MinIntervalMs,
+            MaxIntervalMs = Configuration.MaxIntervalMs,
+            MaxBlur = Configuration.MaxBlur,
+            AnticipationStart = Configuration.AnticipationStart,
+            AnticipationDwellMs = Configuration.AnticipationDwellMs,
+            ConfettiCount = Configuration.ConfettiCount,
+            AudioVolume = Configuration.AudioVolume,
+            EnableFocusTrap = Configuration.EnableFocusTrap,
+            AutoUpdateCheck = Configuration.AutoUpdateCheck,
+            SurpriseMeText = Configuration.SurpriseMeText,
+            ShowListText = Configuration.ShowListText,
+            PlayItText = Configuration.PlayItText,
+            RerollText = Configuration.RerollText,
+            CloseText = Configuration.CloseText
+        };
+        var cfgJson = JsonSerializer.Serialize(cfg);
+
+        // Create the script tag to inject: config object first, then script
         var scriptTag = $@"
     {ScriptMarker}
+    <script type=""text/javascript"">window.PlaylistModalConfig = {cfgJson};</script>
     <script type=""text/javascript"">
 {jsContent}
     </script>
