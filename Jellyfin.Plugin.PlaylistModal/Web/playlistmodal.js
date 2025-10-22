@@ -1,6 +1,6 @@
 /**
  * Jellyfin Playlist Modal Plugin - Client Side Script
- * Version 0.9.0 - Initial Public Release
+ * Version 0.9.1 - Bug Fix Release
  *
  * This script intercepts playlist clicks and shows an animated modal with two options:
  * 1. Surprise Me - Slot machine animation revealing a random unwatched item
@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[PlaylistModal] Plugin loaded (v0.9.0)');
+    console.log('[PlaylistModal] Plugin loaded (v0.9.1)');
 
     // Animation configuration
     const config = {
@@ -367,6 +367,15 @@
                         box-shadow: none;
                     }
 
+                    .playlist-modal-btn:focus {
+                        outline: none;
+                        box-shadow: 0 0 0 3px rgba(67, 177, 236, 0.4), 0 0 20px rgba(67, 177, 236, 0.3);
+                    }
+
+                    .playlist-modal-btn.secondary:focus {
+                        box-shadow: 0 0 0 3px rgba(67, 177, 236, 0.4), 0 4px 12px rgba(0,0,0,.35);
+                    }
+
                     .playlist-modal-btn.secondary {
                         background: linear-gradient(180deg, #2a2b35, #1f2028);
                         box-shadow: 0 4px 12px rgba(0,0,0,.35);
@@ -420,7 +429,7 @@
                     </div>
 
                     <div class="playlist-modal-controls" id="playlistModalControls">
-                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn">🍿 Surprise Me!</button>
+                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn" autofocus>🍿 Surprise Me!</button>
                         <button class="playlist-modal-btn secondary" id="playlistModalShowListBtn">🎞️ Show List</button>
                     </div>
                 </div>
@@ -738,7 +747,7 @@
 
         // Show "Watch Now" button
         controls.innerHTML = `
-            <button class="playlist-modal-btn" id="playlistModalWatchBtn">▶️ Watch Now</button>
+            <button class="playlist-modal-btn" id="playlistModalWatchBtn" autofocus>▶️ Watch Now</button>
             <button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">✕ Close</button>
         `;
 
@@ -819,7 +828,10 @@
     function handleShowList(playlistId) {
         console.log('[PlaylistModal] Show List selected');
         closeModal();
-        window.location.href = '/web/index.html#!/list.html?type=Playlist&parentId=' + playlistId;
+        const ApiClient = window.ApiClient;
+        const serverId = ApiClient.serverId ? ApiClient.serverId() : ApiClient.serverInfo().Id;
+        const playlistUrl = '/web/index.html#!/details?id=' + playlistId + '&serverId=' + serverId;
+        window.location.href = playlistUrl;
     }
 
     // Initialize when DOM is ready
