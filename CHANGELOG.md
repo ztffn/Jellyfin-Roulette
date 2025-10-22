@@ -1,111 +1,60 @@
 # Changelog
 
-All notable changes to the Jellyfin Playlist Modal Plugin will be documented in this file.
+All notable changes to Jellyfin-Roulette will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-10-22
+## [0.9.0] - 2025-10-22
 
-### Added
-- Initial release of Jellyfin Playlist Modal Plugin
-- Playlist click interception with multiple detection methods (anchor tags, data attributes, hash URLs)
-- Browser confirm modal for "Surprise Me" vs "Show List" options
+### Initial Public Release
+
+First public release of Jellyfin-Roulette, a plugin that adds slot machine animation to Jellyfin playlists.
+
+#### Features Added
+- **Slot machine animation** for selecting random unwatched items
+- **Dynamic container resize** from playlist cover (landscape) to movie poster (portrait)
+- **Audio feedback** with synthesized tick sounds during animation
+- **Visual effects**: speed-based blur, progress ring, anticipation stutters, confetti burst
+- **Playlist cover display** as initial image before animation
+- **Smart filtering** to show only unwatched items
+- **Responsive design** with mobile breakpoints
+
+#### Technical Implementation
+- C# .NET 8.0 Jellyfin plugin with JavaScript injection pattern
 - REST API endpoint: `GET /PlaylistModal/Random/{playlistId}?userId={userId}`
-- Random unwatched item selection from playlists
-- Navigation to item details page on "Surprise Me"
-- Normal playlist navigation on "Show List"
-- Graceful error handling for empty playlists and no unwatched items
-- Multi-path fallback for JavaScript injection (Docker and native installations)
-- Comprehensive logging for troubleshooting
-- BaseItemDto serialization for proper API responses
+- Client-side Web Audio API for tick sounds (no external audio files)
+- 60fps hardware-accelerated animations using requestAnimationFrame
+- Multi-path detection for Docker and native Jellyfin installations
+- Inline CSS for zero external dependencies
 
-### Technical Decisions
-- JavaScript injection pattern for UI modification (non-invasive)
-- Event capture phase for click interception (before other handlers)
-- Browser confirm dialog for v1.0 (simple, reliable UX)
-- Navigation to details page instead of autoplay (playbackManager scope limitation)
-- Clean, production-ready code (no debug spam, no experimental attempts)
+#### User Experience
+- Click playlist → Modal shows playlist cover with two buttons
+- "Surprise Me" → Smooth resize + slot animation + audio ticks → confetti + title reveal
+- "Show List" → Normal playlist view
+- Graceful handling of empty playlists and no unwatched items
 
-### Known Limitations
-- No autoplay functionality (user must click play button on details page)
-  - Reason: playbackManager is in bundled module scope, not globally accessible
-  - May be addressed in future versions
-- Uses native browser confirm() dialog instead of Jellyfin-styled modal
-  - Will be improved in Phase 3
-- Optimized for movie playlists only
-  - TV show and music support planned for future releases
+#### Known Limitations
+- No autoplay functionality (navigates to item details page instead)
+- Uses browser confirm for fallback messages (not yet Jellyfin-styled alerts)
+- Optimized for movie playlists (TV shows and music not yet supported)
 
-## [Unreleased]
+---
 
-### Planned Features
-- Jellyfin-styled modal dialog (Phase 3)
-- Configuration page for admin settings
-- TV show playlist support (random unwatched episode)
-- Music playlist support (random unplayed track)
-- Autoplay functionality (direct playback without details page navigation)
-- Keyboard shortcuts (S for Surprise, L for List)
-- Playlist statistics in modal (X unwatched of Y total)
-- Remember user preference per playlist
-- "Mark watched & next" quick action
+## Roadmap
+
+### v1.0.0 (Planned)
+Public announcement and first stable release after community testing.
+
+### Future Versions
+- Configuration page for customization
+- TV show and music playlist support
+- Keyboard shortcuts
+- Autoplay functionality (if feasible)
 - Multi-language support
 
 ---
 
-## Development Timeline
-
-### 2025-10-21 - Phase 1: Proof of Concept
-- Cloned and configured jellyfin-plugin-template
-- Renamed project to PlaylistModal
-- Implemented JavaScript injection in Plugin.cs
-- Created client-side JavaScript (playlistmodal.js)
-- Fixed StyleCop and analyzer issues
-- Successfully built plugin (19KB DLL)
-- Deployed to Jellyfin Docker container
-- Verified JavaScript injection working
-
-### 2025-10-21 - Phase 2: Server-Side Logic
-- Created PlaylistModalController.cs API endpoint
-- Implemented random unwatched item selection logic
-- Added ILibraryManager, IUserManager, IDtoService dependencies
-- Fixed BaseItem vs BaseItemDto serialization issue
-- Integrated API with client-side JavaScript
-- Added authentication handling with ApiClient.getJSON()
-- Tested API endpoint successfully
-
-### 2025-10-22 - v1.0 Clean Production Release
-- Removed all autoplay attempts (not feasible in v1.0)
-- Removed excessive debug logging
-- Created clean, production-ready code
-- Simplified user flow: navigate to details page (user clicks play)
-- Verified deployment and functionality
-- Created comprehensive documentation (README, CHANGELOG)
-- Updated project status in scratchpad
-
----
-
-## Version History Summary
-
-| Version | Date       | Status    | Key Features                          |
-|---------|------------|-----------|---------------------------------------|
-| 1.0.0   | 2025-10-22 | Stable    | Initial release, core functionality   |
-| 2.0.0   | TBD        | Planned   | Jellyfin-styled modal, configuration  |
-| 3.0.0   | TBD        | Planned   | TV shows, music, autoplay support     |
-
----
-
-## Migration Guide
-
-### Upgrading from Pre-Release to v1.0.0
-
-No migration needed - this is the first stable release.
-
-### Future Upgrades
-
-Upgrade instructions will be provided when new versions are released.
-
----
-
-**Current Version**: v1.0.0
-**Status**: Production Ready ✅
-**Last Updated**: 2025-10-22
+**Current Version**: v0.9.0
+**Status**: Initial Public Release
+**Repository**: https://github.com/ztffn/Jellyfin-Roulette

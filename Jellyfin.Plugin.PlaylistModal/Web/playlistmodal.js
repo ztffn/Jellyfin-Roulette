@@ -1,6 +1,6 @@
 /**
  * Jellyfin Playlist Modal Plugin - Client Side Script
- * Version 2.1.1 - Enhanced Slot Machine Modal with Dynamic Resize & Sound
+ * Version 0.9.0 - Initial Public Release
  *
  * This script intercepts playlist clicks and shows an animated modal with two options:
  * 1. Surprise Me - Slot machine animation revealing a random unwatched item
@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[PlaylistModal] Plugin loaded (v2.1.1)');
+    console.log('[PlaylistModal] Plugin loaded (v0.9.0)');
 
     // Animation configuration
     const config = {
