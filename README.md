@@ -4,7 +4,7 @@
 
 A Jellyfin plugin that transforms playlist browsing into an exciting slot-machine experience. Click a playlist, hit "Surprise Me," and watch as movie posters spin past before landing on your next watch — complete with smooth animations, satisfying audio ticks, and confetti celebration!
 
-![Version](https://img.shields.io/badge/version-2.1.1-blue)
+![Version](https://img.shields.io/badge/version-0.9.0-blue)
 ![Jellyfin](https://img.shields.io/badge/jellyfin-10.8%2B-purple)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -50,16 +50,16 @@ A Jellyfin plugin that transforms playlist browsing into an exciting slot-machin
 
 #### Option 1: Download Pre-built Release (Recommended)
 
-1. Download the latest `Jellyfin.Plugin.PlaylistModal.dll` from [Releases](https://github.com/yourusername/Jellyfin-Roulette/releases)
+1. Download the latest `Jellyfin.Plugin.PlaylistModal.dll` from [Releases](https://github.com/ztffn/Jellyfin-Roulette/releases)
 
 2. Create plugin directory:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_2.1.1.0/
+   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
    ```
 
 3. Copy the DLL:
    ```bash
-   cp Jellyfin.Plugin.PlaylistModal.dll /path/to/jellyfin/config/plugins/Playlist\ Modal_2.1.1.0/
+   cp Jellyfin.Plugin.PlaylistModal.dll /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
    ```
 
 4. Restart Jellyfin:
@@ -75,7 +75,7 @@ A Jellyfin plugin that transforms playlist browsing into an exciting slot-machin
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/Jellyfin-Roulette.git
+   git clone https://github.com/ztffn/Jellyfin-Roulette.git
    cd Jellyfin-Roulette
    ```
 
@@ -87,9 +87,9 @@ A Jellyfin plugin that transforms playlist browsing into an exciting slot-machin
 
 3. Deploy:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_2.1.1.0/
+   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
    cp bin/Debug/net8.0/Jellyfin.Plugin.PlaylistModal.dll \
-      /path/to/jellyfin/config/plugins/Playlist\ Modal_2.1.1.0/
+      /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
    ```
 
 4. Restart Jellyfin
@@ -271,7 +271,7 @@ docker logs -f jellyfin | grep PlaylistModal
 ```javascript
 // Browser console (F12)
 // Check for plugin load message
-[PlaylistModal] Plugin loaded (v2.1.1)
+[PlaylistModal] Plugin loaded (v0.9.0)
 ```
 
 ## 🐛 Troubleshooting
@@ -307,7 +307,7 @@ docker logs -f jellyfin | grep PlaylistModal
 
 2. **Verify DLL location**:
    ```bash
-   ls -la /path/to/jellyfin/config/plugins/Playlist\ Modal_2.1.1.0/
+   ls -la /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
    ```
 
 3. **Ensure correct version** folder name matches DLL version
@@ -384,8 +384,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/Jellyfin-Roulette/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/Jellyfin-Roulette/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ztffn/Jellyfin-Roulette/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ztffn/Jellyfin-Roulette/discussions)
 - **Jellyfin Forum**: [Jellyfin Community](https://forum.jellyfin.org/)
 
 ## ⭐ Show Your Support
@@ -401,4 +401,4 @@ If you find Jellyfin-Roulette useful, please consider:
 
 **Made with 🎲 for the Jellyfin community**
 
-*Last updated: 2025-10-22 | Version 2.1.1*
+*Last updated: 2025-10-22 | Version 0.9.0*
