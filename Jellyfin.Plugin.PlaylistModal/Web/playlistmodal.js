@@ -1,6 +1,6 @@
 /**
  * Jellyfin Playlist Modal Plugin - Client Side Script
- * Version 0.9.1 - Bug Fix Release
+ * Version 0.9.2 - Focus Trap Fix
  *
  * This script intercepts playlist clicks and shows an animated modal with two options:
  * 1. Surprise Me - Slot machine animation revealing a random unwatched item
@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[PlaylistModal] Plugin loaded (v0.9.1)');
+    console.log('[PlaylistModal] Plugin loaded (v0.9.2)');
 
     // Animation configuration
     const config = {
@@ -169,7 +169,7 @@
 
         // Create modal HTML
         const modalHTML = `
-            <div class="playlist-modal-overlay" id="playlistModalOverlay">
+            <div class="playlist-modal-overlay" id="playlistModalOverlay" role="dialog" aria-modal="true" aria-labelledby="playlistModalHeading">
                 <style>
                     .playlist-modal-overlay {
                         position: fixed;
@@ -458,13 +458,55 @@
         surpriseBtn.addEventListener('click', () => handleSurpriseMe(playlistId));
         showListBtn.addEventListener('click', () => handleShowList(playlistId));
 
-        // Close on ESC key
-        const handleEsc = (e) => {
+        // Store previously focused element
+        const previouslyFocused = document.activeElement;
+
+        // Focus trap - keep focus within modal
+        const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+        const handleKeydown = (e) => {
+            // Close on ESC
             if (e.key === 'Escape') {
                 closeModal();
+                return;
+            }
+
+            // Trap focus on Tab/Shift+Tab
+            if (e.key === 'Tab') {
+                const focusableElements = modal.querySelectorAll(focusableSelector);
+                const firstFocusable = focusableElements[0];
+                const lastFocusable = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey) {
+                    // Shift+Tab: if on first element, jump to last
+                    if (document.activeElement === firstFocusable) {
+                        e.preventDefault();
+                        lastFocusable.focus();
+                    }
+                } else {
+                    // Tab: if on last element, jump to first
+                    if (document.activeElement === lastFocusable) {
+                        e.preventDefault();
+                        firstFocusable.focus();
+                    }
+                }
+            }
+
+            // Prevent arrow keys from affecting background
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                e.stopPropagation();
             }
         };
-        document.addEventListener('keydown', handleEsc);
+
+        document.addEventListener('keydown', handleKeydown, true);
+
+        // Prevent all keyboard events from reaching background elements
+        const stopBackgroundKeyboard = (e) => {
+            e.stopPropagation();
+        };
+        modal.addEventListener('keydown', stopBackgroundKeyboard, true);
+        modal.addEventListener('keyup', stopBackgroundKeyboard, true);
+        modal.addEventListener('keypress', stopBackgroundKeyboard, true);
 
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
@@ -475,7 +517,11 @@
 
         // Store cleanup function
         modal._cleanup = () => {
-            document.removeEventListener('keydown', handleEsc);
+            document.removeEventListener('keydown', handleKeydown, true);
+            // Restore focus to previously focused element
+            if (previouslyFocused) {
+                previouslyFocused.focus();
+            }
         };
     }
 

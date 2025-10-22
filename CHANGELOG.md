@@ -5,6 +5,21 @@ All notable changes to Jellyfin-Roulette will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] - 2025-10-22
+
+### Bug Fixes
+
+- **Fixed focus trap in modal** - Keyboard navigation now stays within modal bounds
+- **Prevented background keyboard events** - Arrow keys and other inputs no longer affect background elements
+- **Added proper ARIA attributes** - Modal now has `role="dialog"` and `aria-modal="true"` for accessibility
+
+### Technical Changes
+
+- Implemented focus trapping with Tab/Shift+Tab cycling through modal elements only
+- Added event capturing to block all keyboard events from reaching background
+- Store and restore previously focused element on modal close
+- Prevent arrow key propagation to background navigation
+
 ## [0.9.1] - 2025-10-22
 
 ### Bug Fixes
@@ -69,6 +84,6 @@ Public announcement and first stable release after community testing.
 
 ---
 
-**Current Version**: v0.9.1
-**Status**: Bug Fix Release
+**Current Version**: v0.9.2
+**Status**: Focus Trap Fix
 **Repository**: https://github.com/ztffn/Jellyfin-Roulette
