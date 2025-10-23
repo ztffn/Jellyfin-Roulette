@@ -26,8 +26,8 @@
   <ItemGroup>
     <None Remove="Configuration\configPage.html" />
     <EmbeddedResource Include="Configuration\configPage.html" />
-    <None Remove="Web\playlistmodal.js" />
-    <EmbeddedResource Include="Web\playlistmodal.js" />
+    <None Remove="Web\roulette.js" />
+    <EmbeddedResource Include="Web\roulette.js" />
   </ItemGroup>
 
 </Project>
