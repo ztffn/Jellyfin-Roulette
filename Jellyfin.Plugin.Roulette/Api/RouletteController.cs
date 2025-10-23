@@ -12,33 +12,33 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.PlaylistModal.Api;
+namespace Jellyfin.Plugin.Roulette.Api;
 
 /// <summary>
-/// Playlist Modal API controller.
+/// Roulette API controller.
 /// </summary>
 [ApiController]
 [Authorize]
-[Route("PlaylistModal")]
-public class PlaylistModalController : ControllerBase
+[Route("Roulette")]
+public class RouletteController : ControllerBase
 {
     private readonly ILibraryManager _libraryManager;
     private readonly IUserManager _userManager;
     private readonly IDtoService _dtoService;
-    private readonly ILogger<PlaylistModalController> _logger;
+    private readonly ILogger<RouletteController> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PlaylistModalController"/> class.
+    /// Initializes a new instance of the <see cref="RouletteController"/> class.
     /// </summary>
     /// <param name="libraryManager">Instance of the <see cref="ILibraryManager"/> interface.</param>
     /// <param name="userManager">Instance of the <see cref="IUserManager"/> interface.</param>
     /// <param name="dtoService">Instance of the <see cref="IDtoService"/> interface.</param>
-    /// <param name="logger">Instance of the <see cref="ILogger{PlaylistModalController}"/> interface.</param>
-    public PlaylistModalController(
+    /// <param name="logger">Instance of the <see cref="ILogger{RouletteController}"/> interface.</param>
+    public RouletteController(
         ILibraryManager libraryManager,
         IUserManager userManager,
         IDtoService dtoService,
-        ILogger<PlaylistModalController> logger)
+        ILogger<RouletteController> logger)
     {
         _libraryManager = libraryManager;
         _userManager = userManager;

@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.PlaylistModal.Configuration;
+namespace Jellyfin.Plugin.Roulette.Configuration;
 
 /// <summary>
 /// The configuration options.
