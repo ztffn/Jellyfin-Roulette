@@ -10,9 +10,9 @@
 (function() {
     'use strict';
 
-    console.log('[PlaylistModal] Plugin loaded (v0.9.0)');
+    console.log('[Roulette] Plugin loaded (v0.9.5)');
 
-	// Animation configuration (overridden by server-provided PlaylistModalConfig if present)
+	// Animation configuration (overridden by server-provided RouletteConfig if present)
 	const config = {
 		totalDuration: 3000,
 		minInterval: 15,
@@ -25,7 +25,7 @@
 		minTickGap: 33  // ms between audio ticks
 	};
 
-	const injectedCfg = window.PlaylistModalConfig || null;
+	const injectedCfg = window.RouletteConfig || null;
 	if (injectedCfg) {
 		if (Number.isFinite(injectedCfg.TotalDurationMs)) config.totalDuration = injectedCfg.TotalDurationMs;
 		if (Number.isFinite(injectedCfg.MinIntervalMs)) config.minInterval = injectedCfg.MinIntervalMs;
@@ -50,7 +50,7 @@
 		close: injectedCfg && injectedCfg.CloseText ? injectedCfg.CloseText : 'Close'
 	};
 
-	const clientVersion = '0.9.0';
+	const clientVersion = '0.9.5';
 
     // State
     let currentModal = null;
@@ -65,7 +65,7 @@
      * Initialize - Set up click interception
      */
     function init() {
-        console.log('[PlaylistModal] Initializing...');
+        console.log('[Roulette] Initializing...');
 
         // Intercept playlist navigation clicks
         document.addEventListener('click', function(e) {
@@ -97,14 +97,14 @@
             }
 
             if (playlistId) {
-                console.log('[PlaylistModal] Intercepted playlist click:', playlistId);
+                console.log('[Roulette] Intercepted playlist click:', playlistId);
                 e.preventDefault();
                 e.stopPropagation();
-                showPlaylistModal(playlistId);
+                showRouletteModal(playlistId);
             }
         }, true);
 
-        console.log('[PlaylistModal] Event listener registered');
+        console.log('[Roulette] Event listener registered');
     }
 
     /**
@@ -127,7 +127,7 @@
             }
             clickBuf = buf;
         } catch (error) {
-            console.log('[PlaylistModal] Audio initialization failed:', error);
+            console.log('[Roulette] Audio initialization failed:', error);
         }
     }
 
@@ -179,8 +179,8 @@
     /**
      * Show the enhanced modal dialog
      */
-    async function showPlaylistModal(playlistId) {
-        console.log('[PlaylistModal] Showing modal for playlist:', playlistId);
+    async function showRouletteModal(playlistId) {
+        console.log('[Roulette] Showing modal for playlist:', playlistId);
 
         // Store playlist ID globally for later use
         currentPlaylistId = playlistId;
@@ -189,7 +189,7 @@
         try {
             playlistInfo = await fetchPlaylistInfo(playlistId);
         } catch (error) {
-            console.error('[PlaylistModal] Error fetching playlist info:', error);
+            console.error('[Roulette] Error fetching playlist info:', error);
             playlistInfo = { imageUrl: '', Name: 'Playlist' };
         }
 
@@ -200,9 +200,9 @@
 
         // Create modal HTML
         const modalHTML = `
-            <div class="playlist-modal-overlay" id="playlistModalOverlay">
+            <div class="roulette-overlay" id="rouletteOverlay">
                 <style>
-                    .playlist-modal-overlay {
+                    .roulette-overlay {
                         position: fixed;
                         inset: 0;
                         z-index: 9999;
@@ -218,14 +218,14 @@
                         to { opacity: 1; }
                     }
 
-                    .playlist-modal-wrap {
+                    .roulette-wrap {
                         display: grid;
                         gap: 24px;
                         place-items: center;
                         max-width: 90vw;
                     }
 
-                    .playlist-modal-heading {
+                    .roulette-heading {
                         margin: 0 0 10px;
                         font-size: clamp(26px, 3.2vw, 40px);
                         font-weight: 900;
@@ -240,12 +240,12 @@
                         transition: opacity 280ms cubic-bezier(.2,.7,.2,1), transform 280ms cubic-bezier(.2,.7,.2,1);
                     }
 
-                    .playlist-modal-heading.show {
+                    .roulette-heading.show {
                         opacity: 1;
                         transform: translateY(0);
                     }
 
-                    .playlist-modal-ring {
+                    .roulette-ring {
                         --progress: 0;
                         --ringPad: 12px;
                         position: relative;
@@ -266,16 +266,16 @@
                         transition: width 600ms cubic-bezier(.2,.7,.2,1), height 600ms cubic-bezier(.2,.7,.2,1), filter 200ms ease;
                     }
 
-                    .playlist-modal-ring.poster-mode {
+                    .roulette-ring.poster-mode {
                         width: 260px;
                         height: 380px;
                     }
 
-                    .playlist-modal-ring:hover {
+                    .roulette-ring:hover {
                         filter: drop-shadow(0 18px 40px rgba(0,0,0,.55));
                     }
 
-                    .playlist-modal-stage {
+                    .roulette-stage {
                         --blur: 0px;
                         --vignette: 0.35;
                         position: relative;
@@ -293,12 +293,12 @@
                         transition: width 600ms cubic-bezier(.2,.7,.2,1), height 600ms cubic-bezier(.2,.7,.2,1), transform 180ms cubic-bezier(.2,.7,.2,1), box-shadow 140ms linear;
                     }
 
-                    .poster-mode .playlist-modal-stage {
+                    .poster-mode .roulette-stage {
                         width: 236px;
                         height: 356px;
                     }
 
-                    .playlist-modal-stage::after {
+                    .roulette-stage::after {
                         content: "";
                         position: absolute;
                         inset: 0;
@@ -309,7 +309,7 @@
                         pointer-events: none;
                     }
 
-                    .playlist-modal-img {
+                    .roulette-img {
                         position: absolute;
                         inset: 0;
                         width: 100%;
@@ -324,12 +324,12 @@
                         opacity: 0;
                     }
 
-                    .playlist-modal-img.active {
+                    .roulette-img.active {
                         opacity: 1;
                         transform: translateY(0) scale(1);
                     }
 
-                    .playlist-modal-flash {
+                    .roulette-flash {
                         position: absolute;
                         inset: 0;
                         pointer-events: none;
@@ -337,7 +337,7 @@
                         opacity: 0;
                     }
 
-                    .playlist-modal-flash.pop {
+                    .roulette-flash.pop {
                         animation: flash 520ms cubic-bezier(.2,.7,.2,1);
                     }
 
@@ -353,13 +353,13 @@
                         100% { transform: scale(1.22); }
                     }
 
-                    .playlist-modal-confetti {
+                    .roulette-confetti {
                         position: absolute;
                         inset: 0;
                         pointer-events: none;
                     }
 
-                    .playlist-modal-controls {
+                    .roulette-controls {
                         display: flex;
                         gap: 12px;
                         align-items: center;
@@ -367,7 +367,7 @@
                         flex-wrap: wrap;
                     }
 
-                    .playlist-modal-btn {
+                    .roulette-btn {
                         padding: 10px 16px;
                         border-radius: 12px;
                         border: 0;
@@ -382,77 +382,77 @@
                         font-size: 14px;
                     }
 
-                    .playlist-modal-btn:hover {
+                    .roulette-btn:hover {
                         transform: translateY(-1px);
                         box-shadow: 0 10px 20px rgba(69,87,255,.45);
                     }
 
-                    .playlist-modal-btn:active {
+                    .roulette-btn:active {
                         transform: translateY(0);
                     }
 
-                    .playlist-modal-btn:disabled {
+                    .roulette-btn:disabled {
                         opacity: 0.6;
                         cursor: not-allowed;
                         transform: none;
                         box-shadow: none;
                     }
 
-                    .playlist-modal-btn.secondary {
+                    .roulette-btn.secondary {
                         background: linear-gradient(180deg, #2a2b35, #1f2028);
                         box-shadow: 0 4px 12px rgba(0,0,0,.35);
                     }
 
-                    .playlist-modal-btn.secondary:hover {
+                    .roulette-btn.secondary:hover {
                         box-shadow: 0 6px 18px rgba(0,0,0,.45);
                     }
 
                     @media (prefers-reduced-motion: reduce) {
-                        .playlist-modal-overlay,
-                        .playlist-modal-heading,
-                        .playlist-modal-stage,
-                        .playlist-modal-img {
+                        .roulette-overlay,
+                        .roulette-heading,
+                        .roulette-stage,
+                        .roulette-img {
                             transition: none !important;
                             animation: none !important;
                         }
-                        .playlist-modal-flash { animation: none !important; }
+                        .roulette-flash { animation: none !important; }
                     }
 
                     @media (max-width: 768px) {
-                        .playlist-modal-ring {
+                        .roulette-ring {
                             width: 320px;
                             height: 180px;
                         }
-                        .playlist-modal-ring.poster-mode {
+                        .roulette-ring.poster-mode {
                             width: 220px;
                             height: 320px;
                         }
-                        .playlist-modal-stage {
+                        .roulette-stage {
                             width: 296px;
                             height: 156px;
                         }
-                        .poster-mode .playlist-modal-stage {
+                        .poster-mode .roulette-stage {
                             width: 196px;
                             height: 296px;
                         }
                     }
                 </style>
 
-                <div class="playlist-modal-wrap">
-                    <h1 class="playlist-modal-heading" id="playlistModalHeading"></h1>
+                <div class="roulette-wrap">
+                    <h1 class="roulette-heading" id="rouletteHeading"></h1>
 
-                    <div class="playlist-modal-ring" id="playlistModalRing">
-                        <div class="playlist-modal-stage" id="playlistModalStage">
-                            <img class="playlist-modal-img active" id="playlistModalImgA" alt="Playlist item" src="" />
-                            <img class="playlist-modal-img" id="playlistModalImgB" alt="" src="" />
-                            <canvas class="playlist-modal-confetti" id="playlistModalConfetti" width="356" height="356"></canvas>
-                            <div class="playlist-modal-flash" id="playlistModalFlash"></div>
+                    <div class="roulette-ring" id="rouletteRing">
+                        <div class="roulette-stage" id="rouletteStage">
+                            <img class="roulette-img active" id="rouletteImgA" alt="Playlist item" src="" />
+                            <img class="roulette-img" id="rouletteImgB" alt="" src="" />
+                            <canvas class="roulette-confetti" id="rouletteConfetti" width="356" height="356"></canvas>
+                            <div class="roulette-flash" id="rouletteFlash"></div>
                         </div>
                     </div>
 
-                    <div class="playlist-modal-controls" id="playlistModalControls">
-                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn">${buttonTexts.surpriseMe}</button>
-                        <button class="playlist-modal-btn secondary" id="playlistModalShowListBtn">${buttonTexts.showList}</button>
+                    <div class="roulette-controls" id="rouletteControls">
+                        <button class="roulette-btn" id="rouletteSurpriseBtn">${buttonTexts.surpriseMe}</button>
+                        <button class="roulette-btn secondary" id="rouletteShowListBtn">${buttonTexts.showList}</button>
                     </div>
                 </div>
             </div>
@@ -470,9 +470,9 @@
 		modal.setAttribute('aria-modal', 'true');
 
 		// Get elements
-        const surpriseBtn = document.getElementById('playlistModalSurpriseBtn');
-        const showListBtn = document.getElementById('playlistModalShowListBtn');
-        const imgA = document.getElementById('playlistModalImgA');
+        const surpriseBtn = document.getElementById('rouletteSurpriseBtn');
+        const showListBtn = document.getElementById('rouletteShowListBtn');
+        const imgA = document.getElementById('rouletteImgA');
 
 
 		// Manually focus primary action (autofocus is unreliable on dynamic elements)
@@ -658,10 +658,10 @@
      * Handle "Surprise Me" - Show slot animation
      */
     async function handleSurpriseMe(playlistId) {
-        console.log('[PlaylistModal] Surprise Me selected');
+        console.log('[Roulette] Surprise Me selected');
 
-        const surpriseBtn = document.getElementById('playlistModalSurpriseBtn');
-        const showListBtn = document.getElementById('playlistModalShowListBtn');
+        const surpriseBtn = document.getElementById('rouletteSurpriseBtn');
+        const showListBtn = document.getElementById('rouletteShowListBtn');
 
         // Disable buttons
         surpriseBtn.disabled = true;
@@ -689,7 +689,7 @@
             );
 
             if (unwatchedItems.length === 0) {
-                console.log('[PlaylistModal] No unwatched items found');
+                console.log('[Roulette] No unwatched items found');
                 alert('No unwatched items in this playlist!\n\nShowing full playlist instead.');
                 closeModal();
                 handleShowList(playlistId);
@@ -707,14 +707,14 @@
             showListBtn.style.display = 'none';
 
             // Transition to poster mode AND start animation immediately
-            const ring = document.getElementById('playlistModalRing');
+            const ring = document.getElementById('rouletteRing');
             ring.classList.add('poster-mode');
 
             // Start animation immediately (resize happens in parallel)
             runSlotAnimation();
 
         } catch (error) {
-            console.error('[PlaylistModal] Error:', error);
+            console.error('[Roulette] Error:', error);
             alert('Error loading playlist: ' + error.message);
             closeModal();
         }
@@ -724,11 +724,11 @@
      * Run the slot machine animation
      */
     function runSlotAnimation() {
-        const stage = document.getElementById('playlistModalStage');
-        const imgA = document.getElementById('playlistModalImgA');
-        const imgB = document.getElementById('playlistModalImgB');
-        const flash = document.getElementById('playlistModalFlash');
-        const ring = document.getElementById('playlistModalRing');
+        const stage = document.getElementById('rouletteStage');
+        const imgA = document.getElementById('rouletteImgA');
+        const imgB = document.getElementById('rouletteImgB');
+        const flash = document.getElementById('rouletteFlash');
+        const ring = document.getElementById('rouletteRing');
 
         let activeImg = imgA;
         let hiddenImg = imgB;
@@ -830,12 +830,12 @@
      * Settle animation on winner
      */
     function settle(winner) {
-        const stage = document.getElementById('playlistModalStage');
-        const flash = document.getElementById('playlistModalFlash');
-        const heading = document.getElementById('playlistModalHeading');
-        const imgA = document.getElementById('playlistModalImgA');
-        const imgB = document.getElementById('playlistModalImgB');
-        const controls = document.getElementById('playlistModalControls');
+        const stage = document.getElementById('rouletteStage');
+        const flash = document.getElementById('rouletteFlash');
+        const heading = document.getElementById('rouletteHeading');
+        const imgA = document.getElementById('rouletteImgA');
+        const imgB = document.getElementById('rouletteImgB');
+        const controls = document.getElementById('rouletteControls');
 
         // Set winner image
         const activeImg = imgA.classList.contains('active') ? imgA : imgB;
@@ -868,16 +868,17 @@
 
 		// Show final action buttons
 		controls.innerHTML = `
-			<button class="playlist-modal-btn" id="playlistModalWatchBtn">${buttonTexts.playIt}</button>
-			<button class="playlist-modal-btn" id="playlistModalRerollBtn">${buttonTexts.reroll}</button>
-			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">${buttonTexts.showList}</button>
+			<button class="roulette-btn" id="rouletteWatchBtn">${buttonTexts.playIt}</button>
+			<button class="roulette-btn" id="rouletteRerollBtn">${buttonTexts.reroll}</button>
+			<button class="roulette-btn secondary" id="rouletteShowListBtn2">${buttonTexts.showList}</button>
 		`;
 
-        const watchBtn = document.getElementById('playlistModalWatchBtn');
-		const rerollBtn = document.getElementById('playlistModalRerollBtn');
-        const showListBtn2 = document.getElementById('playlistModalShowListBtn2');
+        const watchBtn = document.getElementById('rouletteWatchBtn');
+		const rerollBtn = document.getElementById('rouletteRerollBtn');
+        const showListBtn2 = document.getElementById('rouletteShowListBtn2');
 
         watchBtn.addEventListener('click', () => {
+            closeModal();
             navigateToItem(winner.Id);
         });
 
@@ -910,7 +911,7 @@
         const ApiClient = window.ApiClient;
         const serverId = ApiClient.serverId ? ApiClient.serverId() : ApiClient.serverInfo().Id;
         const detailsUrl = '/web/index.html#!/details?id=' + itemId + '&serverId=' + serverId;
-        console.log('[PlaylistModal] Navigating to item:', itemId);
+        console.log('[Roulette] Navigating to item:', itemId);
         window.location.href = detailsUrl;
     }
 
@@ -918,7 +919,7 @@
      * Confetti burst animation
      */
     function burstConfetti() {
-        const canvas = document.getElementById('playlistModalConfetti');
+        const canvas = document.getElementById('rouletteConfetti');
         const ctx = canvas.getContext('2d');
         const W = canvas.width;
         const H = canvas.height;
@@ -966,7 +967,7 @@
      * Handle "Show List" - navigate to normal playlist view
      */
     function handleShowList(playlistId) {
-        console.log('[PlaylistModal] Show List selected');
+        console.log('[Roulette] Show List selected');
         closeModal();
         // Navigate to playlist details page (same as navigateToItem)
         const ApiClient = window.ApiClient;

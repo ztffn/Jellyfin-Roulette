@@ -4,21 +4,21 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using Jellyfin.Plugin.PlaylistModal.Configuration;
+using Jellyfin.Plugin.Roulette.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.PlaylistModal;
+namespace Jellyfin.Plugin.Roulette;
 
 /// <summary>
 /// The main plugin.
 /// </summary>
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
-    private const string ScriptMarker = "<!-- PlaylistModal Plugin Script -->";
+    private const string ScriptMarker = "<!-- Roulette Plugin Script -->";
 
     private static readonly string[] PossibleWebPaths = new[]
     {
@@ -59,7 +59,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     }
 
     /// <inheritdoc />
-    public override string Name => "Playlist Modal";
+    public override string Name => "Roulette";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d");
@@ -110,7 +110,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
         // Read the JavaScript file from embedded resource
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Jellyfin.Plugin.PlaylistModal.Web.playlistmodal.js";
+        var resourceName = "Jellyfin.Plugin.Roulette.Web.roulette.js";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
@@ -146,7 +146,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         // Create the script tag to inject: config object first, then script
         var scriptTag = $@"
     {ScriptMarker}
-    <script type=""text/javascript"">window.PlaylistModalConfig = {cfgJson};</script>
+    <script type=""text/javascript"">window.RouletteConfig = {cfgJson};</script>
     <script type=""text/javascript"">
 {jsContent}
     </script>
