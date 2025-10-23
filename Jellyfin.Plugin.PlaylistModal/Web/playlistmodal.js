@@ -54,6 +54,7 @@
 
     // State
     let currentModal = null;
+    let currentPlaylistId = null;
     let playlistItems = [];
     let unwatchedItems = [];
     let playlistInfo = null;
@@ -180,6 +181,9 @@
      */
     async function showPlaylistModal(playlistId) {
         console.log('[PlaylistModal] Showing modal for playlist:', playlistId);
+
+        // Store playlist ID globally for later use
+        currentPlaylistId = playlistId;
 
         // Fetch playlist info first
         try {
@@ -520,6 +524,28 @@
 			}
 		};
 
+		const handleArrowKeys = (e) => {
+			if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+
+			const focusables = getFocusable(modal);
+			if (focusables.length === 0) return;
+
+			const currentIndex = focusables.indexOf(document.activeElement);
+			let nextIndex;
+
+			if (e.key === 'ArrowLeft') {
+				// Go backwards (like Shift+Tab)
+				nextIndex = currentIndex <= 0 ? focusables.length - 1 : currentIndex - 1;
+			} else {
+				// ArrowRight: Go forwards (like Tab)
+				nextIndex = currentIndex >= focusables.length - 1 ? 0 : currentIndex + 1;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+			focusables[nextIndex].focus();
+		};
+
 		// Set up event listeners
         surpriseBtn.addEventListener('click', () => handleSurpriseMe(playlistId));
         showListBtn.addEventListener('click', () => handleShowList(playlistId));
@@ -531,12 +557,26 @@
             }
         };
 		const handleKeydown = (e) => {
+			// Block up/down arrows from affecting background (left/right handled by handleArrowKeys)
+			if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+			handleArrowKeys(e);
 			handleTabKey(e);
 			handleEsc(e);
 		};
 		if (enableFocusTrap) {
 			document.addEventListener('keydown', handleKeydown, true);
 		}
+
+		// Block all keyboard events on modal from reaching background
+		const stopKeyboardPropagation = (e) => {
+			e.stopPropagation();
+		};
+		modal.addEventListener('keydown', stopKeyboardPropagation, true);
+		modal.addEventListener('keyup', stopKeyboardPropagation, true);
+		modal.addEventListener('keypress', stopKeyboardPropagation, true);
 
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
@@ -549,6 +589,13 @@
 		modal._cleanup = () => {
 			if (enableFocusTrap) {
 				document.removeEventListener('keydown', handleKeydown, true);
+				modal.removeEventListener('keydown', stopKeyboardPropagation, true);
+				modal.removeEventListener('keyup', stopKeyboardPropagation, true);
+				modal.removeEventListener('keypress', stopKeyboardPropagation, true);
+				// Restore focus to previously focused element
+				if (previouslyFocused) {
+					previouslyFocused.focus();
+				}
 			}
 		};
     }
@@ -823,12 +870,12 @@
 		controls.innerHTML = `
 			<button class="playlist-modal-btn" id="playlistModalWatchBtn">${buttonTexts.playIt}</button>
 			<button class="playlist-modal-btn" id="playlistModalRerollBtn">${buttonTexts.reroll}</button>
-			<button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">${buttonTexts.close}</button>
+			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">${buttonTexts.showList}</button>
 		`;
 
         const watchBtn = document.getElementById('playlistModalWatchBtn');
 		const rerollBtn = document.getElementById('playlistModalRerollBtn');
-        const closeBtn = document.getElementById('playlistModalCloseBtn');
+        const showListBtn2 = document.getElementById('playlistModalShowListBtn2');
 
         watchBtn.addEventListener('click', () => {
             navigateToItem(winner.Id);
@@ -843,8 +890,8 @@
 			runSlotAnimation();
 		});
 
-        closeBtn.addEventListener('click', () => {
-            closeModal();
+        showListBtn2.addEventListener('click', () => {
+            handleShowList(currentPlaylistId);
         });
 
 		// Move focus to the new primary action
@@ -921,7 +968,11 @@
     function handleShowList(playlistId) {
         console.log('[PlaylistModal] Show List selected');
         closeModal();
-        window.location.href = '/web/index.html#!/list.html?type=Playlist&parentId=' + playlistId;
+        // Navigate to playlist details page (same as navigateToItem)
+        const ApiClient = window.ApiClient;
+        const serverId = ApiClient.serverId ? ApiClient.serverId() : ApiClient.serverInfo().Id;
+        const playlistUrl = '/web/index.html#!/details?id=' + playlistId + '&serverId=' + serverId;
+        window.location.href = playlistUrl;
     }
 
     // Initialize when DOM is ready
