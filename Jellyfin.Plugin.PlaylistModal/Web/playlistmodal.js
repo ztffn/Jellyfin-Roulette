@@ -1,6 +1,6 @@
 /**
  * Jellyfin Playlist Modal Plugin - Client Side Script
- * Version 0.9.2 - Focus Trap Fix
+ * Version 0.9.0 - Initial Public Release
  *
  * This script intercepts playlist clicks and shows an animated modal with two options:
  * 1. Surprise Me - Slot machine animation revealing a random unwatched item
@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[PlaylistModal] Plugin loaded (v0.9.2)');
+    console.log('[PlaylistModal] Plugin loaded (v0.9.0)');
 
     // Animation configuration
     const config = {
@@ -27,6 +27,7 @@
 
     // State
     let currentModal = null;
+    let currentPlaylistId = null;
     let playlistItems = [];
     let unwatchedItems = [];
     let playlistInfo = null;
@@ -154,6 +155,9 @@
     async function showPlaylistModal(playlistId) {
         console.log('[PlaylistModal] Showing modal for playlist:', playlistId);
 
+        // Store playlist ID globally for later use
+        currentPlaylistId = playlistId;
+
         // Fetch playlist info first
         try {
             playlistInfo = await fetchPlaylistInfo(playlistId);
@@ -169,7 +173,7 @@
 
         // Create modal HTML
         const modalHTML = `
-            <div class="playlist-modal-overlay" id="playlistModalOverlay" role="dialog" aria-modal="true" aria-labelledby="playlistModalHeading">
+            <div class="playlist-modal-overlay" id="playlistModalOverlay">
                 <style>
                     .playlist-modal-overlay {
                         position: fixed;
@@ -367,15 +371,6 @@
                         box-shadow: none;
                     }
 
-                    .playlist-modal-btn:focus {
-                        outline: none;
-                        box-shadow: 0 0 0 3px rgba(67, 177, 236, 0.4), 0 0 20px rgba(67, 177, 236, 0.3);
-                    }
-
-                    .playlist-modal-btn.secondary:focus {
-                        box-shadow: 0 0 0 3px rgba(67, 177, 236, 0.4), 0 4px 12px rgba(0,0,0,.35);
-                    }
-
                     .playlist-modal-btn.secondary {
                         background: linear-gradient(180deg, #2a2b35, #1f2028);
                         box-shadow: 0 4px 12px rgba(0,0,0,.35);
@@ -429,7 +424,7 @@
                     </div>
 
                     <div class="playlist-modal-controls" id="playlistModalControls">
-                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn" autofocus>🍿 Surprise Me!</button>
+                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn">🍿 Surprise Me!</button>
                         <button class="playlist-modal-btn secondary" id="playlistModalShowListBtn">🎞️ Show List</button>
                     </div>
                 </div>
@@ -443,14 +438,26 @@
         document.body.appendChild(modal);
         currentModal = modal;
 
-        // Get elements
+		// ARIA roles and attributes for accessibility
+		modal.setAttribute('role', 'dialog');
+		modal.setAttribute('aria-modal', 'true');
+
+		// Get elements
         const surpriseBtn = document.getElementById('playlistModalSurpriseBtn');
         const showListBtn = document.getElementById('playlistModalShowListBtn');
         const imgA = document.getElementById('playlistModalImgA');
 
+
 		// Manually focus primary action (autofocus is unreliable on dynamic elements)
 		requestAnimationFrame(() => {
-			try { surpriseBtn && surpriseBtn.focus({ preventScroll: true }); } catch (_) { /* no-op */ }
+			try {
+				if (surpriseBtn) {
+					surpriseBtn.focus({ preventScroll: true });
+				} else {
+					const focusables = getFocusable(modal);
+					focusables[0] && focusables[0].focus({ preventScroll: true });
+				}
+			} catch (_) { /* no-op */ }
 		});
 
         // Set initial image to playlist cover
@@ -459,59 +466,88 @@
             imgA.alt = playlistInfo.Name || 'Playlist';
         }
 
-        // Set up event listeners
+		// Focus trap helpers
+		const getFocusable = (root) => Array.from(root.querySelectorAll([
+			'button:not([disabled])',
+			'[href]',
+			'input:not([disabled])',
+			'select:not([disabled])',
+			'textarea:not([disabled])',
+			'[tabindex]:not([tabindex="-1"])'
+		].join(',')));
+
+		const previouslyFocused = document.activeElement;
+
+		const handleTabKey = (e) => {
+			if (e.key !== 'Tab') return;
+			const focusables = getFocusable(modal);
+			if (focusables.length === 0) return;
+			const first = focusables[0];
+			const last = focusables[focusables.length - 1];
+			if (e.shiftKey) {
+				if (document.activeElement === first || !modal.contains(document.activeElement)) {
+					e.preventDefault();
+					last.focus();
+				}
+			} else {
+				if (document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		};
+
+		const handleArrowKeys = (e) => {
+			if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+
+			const focusables = getFocusable(modal);
+			if (focusables.length === 0) return;
+
+			const currentIndex = focusables.indexOf(document.activeElement);
+			let nextIndex;
+
+			if (e.key === 'ArrowLeft') {
+				// Go backwards (like Shift+Tab)
+				nextIndex = currentIndex <= 0 ? focusables.length - 1 : currentIndex - 1;
+			} else {
+				// ArrowRight: Go forwards (like Tab)
+				nextIndex = currentIndex >= focusables.length - 1 ? 0 : currentIndex + 1;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+			focusables[nextIndex].focus();
+		};
+
+		// Set up event listeners
         surpriseBtn.addEventListener('click', () => handleSurpriseMe(playlistId));
         showListBtn.addEventListener('click', () => handleShowList(playlistId));
 
-        // Store previously focused element
-        const previouslyFocused = document.activeElement;
-
-        // Focus trap - keep focus within modal
-        const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-        const handleKeydown = (e) => {
-            // Close on ESC
+		// Close on ESC key and trap Tab within modal
+        const handleEsc = (e) => {
             if (e.key === 'Escape') {
                 closeModal();
-                return;
-            }
-
-            // Trap focus on Tab/Shift+Tab
-            if (e.key === 'Tab') {
-                const focusableElements = modal.querySelectorAll(focusableSelector);
-                const firstFocusable = focusableElements[0];
-                const lastFocusable = focusableElements[focusableElements.length - 1];
-
-                if (e.shiftKey) {
-                    // Shift+Tab: if on first element, jump to last
-                    if (document.activeElement === firstFocusable) {
-                        e.preventDefault();
-                        lastFocusable.focus();
-                    }
-                } else {
-                    // Tab: if on last element, jump to first
-                    if (document.activeElement === lastFocusable) {
-                        e.preventDefault();
-                        firstFocusable.focus();
-                    }
-                }
-            }
-
-            // Prevent arrow keys from affecting background
-            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-                e.stopPropagation();
             }
         };
+		const handleKeydown = (e) => {
+			// Block up/down arrows from affecting background (left/right handled by handleArrowKeys)
+			if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+			handleArrowKeys(e);
+			handleTabKey(e);
+			handleEsc(e);
+		};
+		document.addEventListener('keydown', handleKeydown, true);
 
-        document.addEventListener('keydown', handleKeydown, true);
-
-        // Prevent all keyboard events from reaching background elements
-        const stopBackgroundKeyboard = (e) => {
-            e.stopPropagation();
-        };
-        modal.addEventListener('keydown', stopBackgroundKeyboard, true);
-        modal.addEventListener('keyup', stopBackgroundKeyboard, true);
-        modal.addEventListener('keypress', stopBackgroundKeyboard, true);
+		// Block all keyboard events on modal from reaching background
+		const stopKeyboardPropagation = (e) => {
+			e.stopPropagation();
+		};
+		modal.addEventListener('keydown', stopKeyboardPropagation, true);
+		modal.addEventListener('keyup', stopKeyboardPropagation, true);
+		modal.addEventListener('keypress', stopKeyboardPropagation, true);
 
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
@@ -520,13 +556,16 @@
             }
         });
 
-        // Store cleanup function
+		// Store cleanup function
         modal._cleanup = () => {
-            document.removeEventListener('keydown', handleKeydown, true);
-            // Restore focus to previously focused element
-            if (previouslyFocused) {
-                previouslyFocused.focus();
-            }
+			document.removeEventListener('keydown', handleKeydown, true);
+			modal.removeEventListener('keydown', stopKeyboardPropagation, true);
+			modal.removeEventListener('keyup', stopKeyboardPropagation, true);
+			modal.removeEventListener('keypress', stopKeyboardPropagation, true);
+			// Restore focus to previously focused element
+			if (previouslyFocused) {
+				previouslyFocused.focus();
+			}
         };
     }
 
@@ -796,24 +835,16 @@
         // Confetti
         burstConfetti();
 
-<<<<<<< HEAD
-        // Show "Watch Now" button
-        controls.innerHTML = `
-            <button class="playlist-modal-btn" id="playlistModalWatchBtn" autofocus>▶️ Watch Now</button>
-            <button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">✕ Close</button>
-        `;
-=======
 		// Show final action buttons
 		controls.innerHTML = `
 			<button class="playlist-modal-btn" id="playlistModalWatchBtn">🎬 Play it!</button>
 			<button class="playlist-modal-btn" id="playlistModalRerollBtn">🎲 Reroll</button>
-			<button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">✕ Close</button>
+			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">🎞️ Show List</button>
 		`;
->>>>>>> e62953f (Modal UX: focus management, 🎲 Reroll, and label update to 🎬 Play it!; close label tweaked)
 
         const watchBtn = document.getElementById('playlistModalWatchBtn');
 		const rerollBtn = document.getElementById('playlistModalRerollBtn');
-        const closeBtn = document.getElementById('playlistModalCloseBtn');
+        const showListBtn2 = document.getElementById('playlistModalShowListBtn2');
 
         watchBtn.addEventListener('click', () => {
             navigateToItem(winner.Id);
@@ -828,14 +859,17 @@
 			runSlotAnimation();
 		});
 
-        closeBtn.addEventListener('click', () => {
-            closeModal();
+        showListBtn2.addEventListener('click', () => {
+            handleShowList(currentPlaylistId);
         });
 
 		// Move focus to the new primary action
 		requestAnimationFrame(() => {
 			try { watchBtn && watchBtn.focus({ preventScroll: true }); } catch (_) { /* no-op */ }
 		});
+
+		// Ensure tab trapping continues after controls update
+		document.addEventListener('keydown', handleKeydown, true);
     }
 
     /**
@@ -903,6 +937,7 @@
     function handleShowList(playlistId) {
         console.log('[PlaylistModal] Show List selected');
         closeModal();
+        // Navigate to playlist details page (same as navigateToItem)
         const ApiClient = window.ApiClient;
         const serverId = ApiClient.serverId ? ApiClient.serverId() : ApiClient.serverInfo().Id;
         const playlistUrl = '/web/index.html#!/details?id=' + playlistId + '&serverId=' + serverId;
