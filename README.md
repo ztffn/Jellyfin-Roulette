@@ -1,7 +1,7 @@
 # Jellyfin-Roulette
  ![plugin banner](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteIconHeader.png) 
  
-![Version](https://img.shields.io/badge/version-0.9.2-blue)
+![Version](https://img.shields.io/badge/version-0.9.5-blue)
 ![Jellyfin](https://img.shields.io/badge/jellyfin-10.8%2B-purple)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -44,7 +44,7 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 1. Download `Jellyfin.Plugin.PlaylistModal.dll` from [Releases](https://github.com/ztffn/Jellyfin-Roulette/releases)
 2. Create plugin directory:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.2.0/
+   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.5.0/
    ```
 3. Copy the DLL to the directory
 4. Restart Jellyfin
