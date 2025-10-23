@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using Jellyfin.Plugin.Roulette.Configuration;
@@ -110,12 +111,16 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
         // Read the JavaScript file from embedded resource
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Jellyfin.Plugin.Roulette.Web.roulette.js";
+        var resourceName = FindEmbeddedResource(assembly, ".Web.roulette.js");
+        if (string.IsNullOrEmpty(resourceName))
+        {
+            return;
+        }
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
-            _logger.LogError("Failed to find embedded resource: {ResourceName}", resourceName);
+            _logger.LogError("Failed to find embedded resource stream: {ResourceName}", resourceName ?? "(null)");
             return;
         }
 
@@ -175,13 +180,38 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// <inheritdoc />
     public IEnumerable<PluginPageInfo> GetPages()
     {
-        return
-        [
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = FindEmbeddedResource(assembly, ".Configuration.configPage.html");
+
+        if (resourceName == null)
+        {
+            _logger.LogError("Configuration page resource not found. Configuration UI will be unavailable.");
+            return Array.Empty<PluginPageInfo>();
+        }
+
+        return new[]
+        {
             new PluginPageInfo
             {
                 Name = Name,
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
+                EmbeddedResourcePath = resourceName
             }
-        ];
+        };
+    }
+
+    private string? FindEmbeddedResource(Assembly assembly, string suffix)
+    {
+        var resources = assembly.GetManifestResourceNames();
+        var resourceName = resources.FirstOrDefault(name => name.EndsWith(suffix, StringComparison.Ordinal));
+
+        if (resourceName == null)
+        {
+            _logger.LogError(
+                "Unable to locate an embedded resource ending with \"{Suffix}\". Available resources: {Resources}",
+                suffix,
+                string.Join(", ", resources));
+        }
+
+        return resourceName;
     }
 }
