@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/ztffn/Jellyfin-Roulette/main/images/icon.png",
     "versions": [
       {
+        "version": "0.9.5.0",
+        "changelog": "Configuration panel, keyboard navigation with arrow keys, UX improvements (Reroll, Show List), bug fixes",
+        "targetAbi": "10.8.0.0",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.5/Jellyfin.Plugin.PlaylistModal.zip",
+        "checksum": "dcdb6c9d19af734f0eb7953e8161b5fd",
+        "timestamp": "2025-10-23T09:38:00Z"
+      },
+      {
         "version": "0.9.2.0",
         "changelog": "Focus trap fix: keyboard navigation stays within modal, prevents background interaction",
         "targetAbi": "10.8.0.0",
