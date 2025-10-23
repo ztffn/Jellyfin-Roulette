@@ -2,35 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Template</title>
+    <title>Playlist Modal Settings</title>
 </head>
 <body>
     <div id="TemplateConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
         <div data-role="content">
             <div class="content-primary">
                 <form id="TemplateConfigForm">
-                    <div class="selectContainer">
-                        <label class="selectLabel" for="Options">Several Options</label>
-                        <select is="emby-select" id="Options" name="Options" class="emby-select-withcolor emby-select">
-                            <option id="optOneOption" value="OneOption">One Option</option>
-                            <option id="optAnotherOption" value="AnotherOption">Another Option</option>
-                        </select>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="TotalDurationMs">Total Duration (ms)</label>
+                        <input id="TotalDurationMs" name="TotalDurationMs" type="number" is="emby-input" min="500" />
+                        <div class="fieldDescription">Total spin time</div>
                     </div>
                     <div class="inputContainer">
-                        <label class="inputLabel inputLabelUnfocused" for="AnInteger">An Integer</label>
-                        <input id="AnInteger" name="AnInteger" type="number" is="emby-input" min="0" />
-                        <div class="fieldDescription">A Description</div>
+                        <label class="inputLabel inputLabelUnfocused" for="MinIntervalMs">Min Interval (ms)</label>
+                        <input id="MinIntervalMs" name="MinIntervalMs" type="number" is="emby-input" min="5" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="MaxIntervalMs">Max Interval (ms)</label>
+                        <input id="MaxIntervalMs" name="MaxIntervalMs" type="number" is="emby-input" min="50" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="MaxBlur">Max Blur (px)</label>
+                        <input id="MaxBlur" name="MaxBlur" type="number" is="emby-input" min="0" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AnticipationStart">Anticipation Start (0..1)</label>
+                        <input id="AnticipationStart" name="AnticipationStart" type="number" step="0.01" is="emby-input" min="0" max="1" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AnticipationDwellMs">Anticipation Dwell (ms)</label>
+                        <input id="AnticipationDwellMs" name="AnticipationDwellMs" type="number" is="emby-input" min="0" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ConfettiCount">Confetti Count</label>
+                        <input id="ConfettiCount" name="ConfettiCount" type="number" is="emby-input" min="0" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AudioVolume">Audio Volume (0..1)</label>
+                        <input id="AudioVolume" name="AudioVolume" type="number" step="0.05" is="emby-input" min="0" max="1" />
                     </div>
                     <div class="checkboxContainer checkboxContainer-withDescription">
                         <label class="emby-checkbox-label">
-                            <input id="TrueFalseSetting" name="TrueFalseCheckBox" type="checkbox" is="emby-checkbox" />
-                            <span>A Checkbox</span>
+                            <input id="EnableFocusTrap" name="EnableFocusTrap" type="checkbox" is="emby-checkbox" />
+                            <span>Enable focus trap</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="AutoUpdateCheck" name="AutoUpdateCheck" type="checkbox" is="emby-checkbox" />
+                            <span>Enable auto-update checks</span>
                         </label>
                     </div>
                     <div class="inputContainer">
-                        <label class="inputLabel inputLabelUnfocused" for="AString">A String</label>
-                        <input id="AString" name="AString" type="text" is="emby-input" />
-                        <div class="fieldDescription">Another Description</div>
+                        <label class="inputLabel inputLabelUnfocused" for="SurpriseMeText">Surprise Me Button Text</label>
+                        <input id="SurpriseMeText" name="SurpriseMeText" type="text" is="emby-input" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ShowListText">Show List Button Text</label>
+                        <input id="ShowListText" name="ShowListText" type="text" is="emby-input" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PlayItText">Play Button Text</label>
+                        <input id="PlayItText" name="PlayItText" type="text" is="emby-input" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="RerollText">Reroll Button Text</label>
+                        <input id="RerollText" name="RerollText" type="text" is="emby-input" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="CloseText">Close Button Text</label>
+                        <input id="CloseText" name="CloseText" type="text" is="emby-input" />
                     </div>
                     <div>
                         <button is="emby-button" type="submit" class="raised button-submit block emby-button">
@@ -42,17 +84,28 @@
         </div>
         <script type="text/javascript">
             var TemplateConfig = {
-                pluginUniqueId: 'eb5d7894-8eef-4b36-aa6f-5d124e828ce1'
+                pluginUniqueId: 'a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d'
             };
 
             document.querySelector('#TemplateConfigPage')
                 .addEventListener('pageshow', function() {
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
-                        document.querySelector('#Options').value = config.Options;
-                        document.querySelector('#AnInteger').value = config.AnInteger;
-                        document.querySelector('#TrueFalseSetting').checked = config.TrueFalseSetting;
-                        document.querySelector('#AString').value = config.AString;
+                        document.querySelector('#TotalDurationMs').value = config.TotalDurationMs;
+                        document.querySelector('#MinIntervalMs').value = config.MinIntervalMs;
+                        document.querySelector('#MaxIntervalMs').value = config.MaxIntervalMs;
+                        document.querySelector('#MaxBlur').value = config.MaxBlur;
+                        document.querySelector('#AnticipationStart').value = config.AnticipationStart;
+                        document.querySelector('#AnticipationDwellMs').value = config.AnticipationDwellMs;
+                        document.querySelector('#ConfettiCount').value = config.ConfettiCount;
+                        document.querySelector('#AudioVolume').value = config.AudioVolume;
+                        document.querySelector('#EnableFocusTrap').checked = config.EnableFocusTrap;
+                        document.querySelector('#AutoUpdateCheck').checked = config.AutoUpdateCheck;
+                        document.querySelector('#SurpriseMeText').value = config.SurpriseMeText;
+                        document.querySelector('#ShowListText').value = config.ShowListText;
+                        document.querySelector('#PlayItText').value = config.PlayItText;
+                        document.querySelector('#RerollText').value = config.RerollText;
+                        document.querySelector('#CloseText').value = config.CloseText;
                         Dashboard.hideLoadingMsg();
                     });
                 });
@@ -61,10 +114,21 @@
                 .addEventListener('submit', function(e) {
                 Dashboard.showLoadingMsg();
                 ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
-                    config.Options = document.querySelector('#Options').value;
-                    config.AnInteger = document.querySelector('#AnInteger').value;
-                    config.TrueFalseSetting = document.querySelector('#TrueFalseSetting').checked;
-                    config.AString = document.querySelector('#AString').value;
+                    config.TotalDurationMs = parseInt(document.querySelector('#TotalDurationMs').value || '0', 10);
+                    config.MinIntervalMs = parseInt(document.querySelector('#MinIntervalMs').value || '0', 10);
+                    config.MaxIntervalMs = parseInt(document.querySelector('#MaxIntervalMs').value || '0', 10);
+                    config.MaxBlur = parseInt(document.querySelector('#MaxBlur').value || '0', 10);
+                    config.AnticipationStart = parseFloat(document.querySelector('#AnticipationStart').value || '0');
+                    config.AnticipationDwellMs = parseInt(document.querySelector('#AnticipationDwellMs').value || '0', 10);
+                    config.ConfettiCount = parseInt(document.querySelector('#ConfettiCount').value || '0', 10);
+                    config.AudioVolume = parseFloat(document.querySelector('#AudioVolume').value || '0');
+                    config.EnableFocusTrap = document.querySelector('#EnableFocusTrap').checked;
+                    config.AutoUpdateCheck = document.querySelector('#AutoUpdateCheck').checked;
+                    config.SurpriseMeText = document.querySelector('#SurpriseMeText').value || '🍿 Surprise Me!';
+                    config.ShowListText = document.querySelector('#ShowListText').value || '🎞️ Show List';
+                    config.PlayItText = document.querySelector('#PlayItText').value || '🎬 Play it!';
+                    config.RerollText = document.querySelector('#RerollText').value || '🎲 Reroll';
+                    config.CloseText = document.querySelector('#CloseText').value || 'Close';
                     ApiClient.updatePluginConfiguration(TemplateConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
                     });

@@ -1,7 +1,7 @@
 # Jellyfin-Roulette
  ![plugin banner](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteIconHeader.png) 
  
-![Version](https://img.shields.io/badge/version-0.9.0-blue)
+![Version](https://img.shields.io/badge/version-0.9.5-blue)
 ![Jellyfin](https://img.shields.io/badge/jellyfin-10.8%2B-purple)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -18,6 +18,8 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 - **Audio feedback** - Synthesized tick sounds during animation (no external files)
 - **Confetti celebration** - Visual effects when selection completes
 - **Dynamic resize** - Container morphs from landscape (playlist) to portrait (movie poster)
+- **Keyboard navigation** - Full support for Tab, Enter, Escape, and arrow keys (←/→ for remote controls)
+- **Configuration panel** - Customize animation timing, button text, audio volume, and more from Jellyfin dashboard
 - **Responsive design** - Works on desktop and mobile
 - **Non-invasive** - JavaScript injection pattern, doesn't modify Jellyfin core files
 
@@ -42,7 +44,7 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 1. Download `Jellyfin.Plugin.PlaylistModal.dll` from [Releases](https://github.com/ztffn/Jellyfin-Roulette/releases)
 2. Create plugin directory:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.0.0/
+   mkdir -p /path/to/jellyfin/config/plugins/Playlist\ Modal_0.9.5.0/
    ```
 3. Copy the DLL to the directory
 4. Restart Jellyfin
@@ -55,7 +57,19 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
    - **🍿 Surprise Me!** - Triggers slot animation and selects random unwatched item
    - **🎞️ Show List** - Opens normal playlist view
 3. Click "Surprise Me!" to watch the animation
-4. Click "🎬 Play it!" to navigate to the selected item
+4. After selection:
+   - **🎬 Play it!** - Navigate to the selected item
+   - **🎲 Reroll** - Try again for a different selection
+   - **🎞️ Show List** - View the full playlist
+
+### ⚙️ Configuration
+
+Access configuration from **Dashboard → Plugins → Playlist Modal**:
+- Customize animation timing and effects
+- Change button text (localization support)
+- Adjust audio volume
+- Configure confetti count
+- Enable/disable focus trap
 
 **Tip:** Enable browser sound to hear the satisfying audio ticks!
 

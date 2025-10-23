@@ -12,18 +12,45 @@
 
     console.log('[PlaylistModal] Plugin loaded (v0.9.0)');
 
-    // Animation configuration
-    const config = {
-        totalDuration: 3000,
-        minInterval: 15,
-        maxInterval: 460,
-        maxBlur: 14,
-        anticipationStart: 0.86,
-        anticipationDwell: 110,
-        finalScale: 1.22,
-        confettiCount: 90,
-        minTickGap: 33  // ms between audio ticks
-    };
+	// Animation configuration (overridden by server-provided PlaylistModalConfig if present)
+	const config = {
+		totalDuration: 3000,
+		minInterval: 15,
+		maxInterval: 460,
+		maxBlur: 14,
+		anticipationStart: 0.86,
+		anticipationDwell: 110,
+		finalScale: 1.22,
+		confettiCount: 90,
+		minTickGap: 33  // ms between audio ticks
+	};
+
+	const injectedCfg = window.PlaylistModalConfig || null;
+	if (injectedCfg) {
+		if (Number.isFinite(injectedCfg.TotalDurationMs)) config.totalDuration = injectedCfg.TotalDurationMs;
+		if (Number.isFinite(injectedCfg.MinIntervalMs)) config.minInterval = injectedCfg.MinIntervalMs;
+		if (Number.isFinite(injectedCfg.MaxIntervalMs)) config.maxInterval = injectedCfg.MaxIntervalMs;
+		if (Number.isFinite(injectedCfg.MaxBlur)) config.maxBlur = injectedCfg.MaxBlur;
+		if (Number.isFinite(injectedCfg.AnticipationStart)) config.anticipationStart = Math.max(0, Math.min(1, injectedCfg.AnticipationStart));
+		if (Number.isFinite(injectedCfg.AnticipationDwellMs)) config.anticipationDwell = injectedCfg.AnticipationDwellMs;
+		if (Number.isFinite(injectedCfg.ConfettiCount)) config.confettiCount = injectedCfg.ConfettiCount;
+	}
+
+	const audioSettings = {
+		volume: injectedCfg && Number.isFinite(injectedCfg.AudioVolume) ? Math.max(0, Math.min(1, injectedCfg.AudioVolume)) : 0.7
+	};
+
+	const enableFocusTrap = injectedCfg && typeof injectedCfg.EnableFocusTrap === 'boolean' ? injectedCfg.EnableFocusTrap : true;
+
+	const buttonTexts = {
+		surpriseMe: injectedCfg && injectedCfg.SurpriseMeText ? injectedCfg.SurpriseMeText : '🍿 Surprise Me!',
+		showList: injectedCfg && injectedCfg.ShowListText ? injectedCfg.ShowListText : '🎞️ Show List',
+		playIt: injectedCfg && injectedCfg.PlayItText ? injectedCfg.PlayItText : '🎬 Play it!',
+		reroll: injectedCfg && injectedCfg.RerollText ? injectedCfg.RerollText : '🎲 Reroll',
+		close: injectedCfg && injectedCfg.CloseText ? injectedCfg.CloseText : 'Close'
+	};
+
+	const clientVersion = '0.9.0';
 
     // State
     let currentModal = null;
@@ -113,7 +140,7 @@
             const now = audioCtx.currentTime;
             const src = audioCtx.createBufferSource();
             const gain = audioCtx.createGain();
-            gain.gain.value = 0.7;
+            gain.gain.value = audioSettings.volume;
             src.buffer = clickBuf;
             src.connect(gain).connect(audioCtx.destination);
             src.start(now);
@@ -424,8 +451,8 @@
                     </div>
 
                     <div class="playlist-modal-controls" id="playlistModalControls">
-                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn">🍿 Surprise Me!</button>
-                        <button class="playlist-modal-btn secondary" id="playlistModalShowListBtn">🎞️ Show List</button>
+                        <button class="playlist-modal-btn" id="playlistModalSurpriseBtn">${buttonTexts.surpriseMe}</button>
+                        <button class="playlist-modal-btn secondary" id="playlistModalShowListBtn">${buttonTexts.showList}</button>
                     </div>
                 </div>
             </div>
@@ -539,7 +566,9 @@
 			handleTabKey(e);
 			handleEsc(e);
 		};
-		document.addEventListener('keydown', handleKeydown, true);
+		if (enableFocusTrap) {
+			document.addEventListener('keydown', handleKeydown, true);
+		}
 
 		// Block all keyboard events on modal from reaching background
 		const stopKeyboardPropagation = (e) => {
@@ -557,16 +586,18 @@
         });
 
 		// Store cleanup function
-        modal._cleanup = () => {
-			document.removeEventListener('keydown', handleKeydown, true);
-			modal.removeEventListener('keydown', stopKeyboardPropagation, true);
-			modal.removeEventListener('keyup', stopKeyboardPropagation, true);
-			modal.removeEventListener('keypress', stopKeyboardPropagation, true);
-			// Restore focus to previously focused element
-			if (previouslyFocused) {
-				previouslyFocused.focus();
+		modal._cleanup = () => {
+			if (enableFocusTrap) {
+				document.removeEventListener('keydown', handleKeydown, true);
+				modal.removeEventListener('keydown', stopKeyboardPropagation, true);
+				modal.removeEventListener('keyup', stopKeyboardPropagation, true);
+				modal.removeEventListener('keypress', stopKeyboardPropagation, true);
+				// Restore focus to previously focused element
+				if (previouslyFocused) {
+					previouslyFocused.focus();
+				}
 			}
-        };
+		};
     }
 
     /**
@@ -837,9 +868,9 @@
 
 		// Show final action buttons
 		controls.innerHTML = `
-			<button class="playlist-modal-btn" id="playlistModalWatchBtn">🎬 Play it!</button>
-			<button class="playlist-modal-btn" id="playlistModalRerollBtn">🎲 Reroll</button>
-			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">🎞️ Show List</button>
+			<button class="playlist-modal-btn" id="playlistModalWatchBtn">${buttonTexts.playIt}</button>
+			<button class="playlist-modal-btn" id="playlistModalRerollBtn">${buttonTexts.reroll}</button>
+			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">${buttonTexts.showList}</button>
 		`;
 
         const watchBtn = document.getElementById('playlistModalWatchBtn');
