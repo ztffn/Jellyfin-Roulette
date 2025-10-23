@@ -493,6 +493,28 @@
 			}
 		};
 
+		const handleArrowKeys = (e) => {
+			if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+
+			const focusables = getFocusable(modal);
+			if (focusables.length === 0) return;
+
+			const currentIndex = focusables.indexOf(document.activeElement);
+			let nextIndex;
+
+			if (e.key === 'ArrowLeft') {
+				// Go backwards (like Shift+Tab)
+				nextIndex = currentIndex <= 0 ? focusables.length - 1 : currentIndex - 1;
+			} else {
+				// ArrowRight: Go forwards (like Tab)
+				nextIndex = currentIndex >= focusables.length - 1 ? 0 : currentIndex + 1;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+			focusables[nextIndex].focus();
+		};
+
 		// Set up event listeners
         surpriseBtn.addEventListener('click', () => handleSurpriseMe(playlistId));
         showListBtn.addEventListener('click', () => handleShowList(playlistId));
@@ -504,10 +526,24 @@
             }
         };
 		const handleKeydown = (e) => {
+			// Block up/down arrows from affecting background (left/right handled by handleArrowKeys)
+			if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+			handleArrowKeys(e);
 			handleTabKey(e);
 			handleEsc(e);
 		};
 		document.addEventListener('keydown', handleKeydown, true);
+
+		// Block all keyboard events on modal from reaching background
+		const stopKeyboardPropagation = (e) => {
+			e.stopPropagation();
+		};
+		modal.addEventListener('keydown', stopKeyboardPropagation, true);
+		modal.addEventListener('keyup', stopKeyboardPropagation, true);
+		modal.addEventListener('keypress', stopKeyboardPropagation, true);
 
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
@@ -519,6 +555,13 @@
 		// Store cleanup function
         modal._cleanup = () => {
 			document.removeEventListener('keydown', handleKeydown, true);
+			modal.removeEventListener('keydown', stopKeyboardPropagation, true);
+			modal.removeEventListener('keyup', stopKeyboardPropagation, true);
+			modal.removeEventListener('keypress', stopKeyboardPropagation, true);
+			// Restore focus to previously focused element
+			if (previouslyFocused) {
+				previouslyFocused.focus();
+			}
         };
     }
 
