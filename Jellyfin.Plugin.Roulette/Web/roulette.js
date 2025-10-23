@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[Roulette] Plugin loaded (v0.9.5)');
+    console.log('[Roulette] Plugin loaded (v1.0.0)');
 
 	// Animation configuration (overridden by server-provided RouletteConfig if present)
 	const config = {
@@ -50,7 +50,7 @@
 		close: injectedCfg && injectedCfg.CloseText ? injectedCfg.CloseText : 'Close'
 	};
 
-	const clientVersion = '0.9.5';
+	const clientVersion = '1.0.0';
 
     // State
     let currentModal = null;
