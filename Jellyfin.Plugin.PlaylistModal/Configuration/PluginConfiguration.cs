@@ -47,77 +47,77 @@ public class PluginConfiguration : BasePluginConfiguration
     }
 
     /// <summary>
-    /// Total animation duration in milliseconds.
+    /// Gets or sets total animation duration in milliseconds.
     /// </summary>
     public int TotalDurationMs { get; set; }
 
     /// <summary>
-    /// Minimum interval between poster swaps in milliseconds.
+    /// Gets or sets minimum interval between poster swaps in milliseconds.
     /// </summary>
     public int MinIntervalMs { get; set; }
 
     /// <summary>
-    /// Maximum interval between poster swaps in milliseconds.
+    /// Gets or sets maximum interval between poster swaps in milliseconds.
     /// </summary>
     public int MaxIntervalMs { get; set; }
 
     /// <summary>
-    /// Maximum blur applied at peak spin.
+    /// Gets or sets maximum blur applied at peak spin.
     /// </summary>
     public int MaxBlur { get; set; }
 
     /// <summary>
-    /// Start of anticipation phase (0..1 of timeline).
+    /// Gets or sets start of anticipation phase (0..1 of timeline).
     /// </summary>
     public double AnticipationStart { get; set; }
 
     /// <summary>
-    /// Dwell time during anticipation beats in milliseconds.
+    /// Gets or sets dwell time during anticipation beats in milliseconds.
     /// </summary>
     public int AnticipationDwellMs { get; set; }
 
     /// <summary>
-    /// Number of confetti pieces on finish.
+    /// Gets or sets number of confetti pieces on finish.
     /// </summary>
     public int ConfettiCount { get; set; }
 
     /// <summary>
-    /// Audio volume for tick sound (0..1).
+    /// Gets or sets audio volume for tick sound (0..1).
     /// </summary>
     public double AudioVolume { get; set; }
 
     /// <summary>
-    /// Enables focus trapping within the modal.
+    /// Gets or sets a value indicating whether focus trapping is enabled within the modal.
     /// </summary>
     public bool EnableFocusTrap { get; set; }
 
     /// <summary>
-    /// If true, the client will check GitHub for new releases.
+    /// Gets or sets a value indicating whether the client will check GitHub for new releases.
     /// </summary>
     public bool AutoUpdateCheck { get; set; }
 
     /// <summary>
-    /// Custom text for the "Surprise Me" button.
+    /// Gets or sets custom text for the "Surprise Me" button.
     /// </summary>
     public string SurpriseMeText { get; set; }
 
     /// <summary>
-    /// Custom text for the "Show List" button.
+    /// Gets or sets custom text for the "Show List" button.
     /// </summary>
     public string ShowListText { get; set; }
 
     /// <summary>
-    /// Custom text for the "Play it!" button.
+    /// Gets or sets custom text for the "Play it!" button.
     /// </summary>
     public string PlayItText { get; set; }
 
     /// <summary>
-    /// Custom text for the "Reroll" button.
+    /// Gets or sets custom text for the "Reroll" button.
     /// </summary>
     public string RerollText { get; set; }
 
     /// <summary>
-    /// Custom text for the "Close" button.
+    /// Gets or sets custom text for the "Close" button.
     /// </summary>
     public string CloseText { get; set; }
 }
