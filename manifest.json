@@ -20,7 +20,7 @@
         "version": "0.9.5.0",
         "changelog": "Configuration panel, keyboard navigation with arrow keys, UX improvements (Reroll, Show List), bug fixes",
         "targetAbi": "10.8.0.0",
-        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.5/Jellyfin.Plugin.PlaylistModal.zip",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.5/Jellyfin.Plugin.Roulette.zip",
         "checksum": "dcdb6c9d19af734f0eb7953e8161b5fd",
         "timestamp": "2025-10-23T09:38:00Z"
       },
@@ -28,7 +28,7 @@
         "version": "0.9.2.0",
         "changelog": "Focus trap fix: keyboard navigation stays within modal, prevents background interaction",
         "targetAbi": "10.8.0.0",
-        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.2/Jellyfin.Plugin.PlaylistModal.zip",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.2/Jellyfin.Plugin.Roulette.zip",
         "checksum": "7e326311ddeddbcebb9262c4b806ccd5",
         "timestamp": "2025-10-22T12:35:13Z"
       },
@@ -36,7 +36,7 @@
         "version": "0.9.1.0",
         "changelog": "Bug fixes: keyboard Enter key support, Show List navigation, and focus indicators",
         "targetAbi": "10.8.0.0",
-        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.1/Jellyfin.Plugin.PlaylistModal.zip",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.1/Jellyfin.Plugin.Roulette.zip",
         "checksum": "29187d9558693c9dd59618cf25364a82",
         "timestamp": "2025-10-22T12:13:59Z"
       },
@@ -44,7 +44,7 @@
         "version": "0.9.0.0",
         "changelog": "Initial public release with slot machine animation, dynamic container resize, audio feedback, and confetti effects",
         "targetAbi": "10.8.0.0",
-        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.0/Jellyfin.Plugin.PlaylistModal.zip",
+        "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v0.9.0/Jellyfin.Plugin.Roulette.zip",
         "checksum": "dc1c1f911f650231742fbd9c93747fc0",
         "timestamp": "2025-10-22T11:52:14Z"
       }
