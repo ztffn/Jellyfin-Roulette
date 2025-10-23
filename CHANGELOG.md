@@ -5,6 +5,27 @@ All notable changes to Jellyfin-Roulette will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-23
+
+### Fixed
+
+- Restore admin configuration page and client injection by resolving embedded-resource lookup regardless of namespace (`Jellyfin.Plugin.Roulette/Plugin.cs`).
+- Align release metadata and documentation with the Roulette branding (README badge, manual install path).
+- Bump client script identifier to surface the correct version in browser console.
+
+## [1.0.0] - 2025-10-23
+
+### Added
+
+- First stable Roulette-branded release with full slot-machine UX polish, animated modal, and configuration UI.
+
+## [0.9.5] - 2025-10-23
+
+### Added
+
+- Jellyfin dashboard configuration page for customizing animation timings, labels, and accessibility options.
+- Keyboard navigation improvements including reroll shortcuts and focus handling.
+
 ## [0.9.2] - 2025-10-22
 
 ### Bug Fixes
@@ -84,6 +105,6 @@ Public announcement and first stable release after community testing.
 
 ---
 
-**Current Version**: v0.9.2
-**Status**: Focus Trap Fix
+**Current Version**: v1.0.1
+**Status**: Namespace Hotfix
 **Repository**: https://github.com/ztffn/Jellyfin-Roulette

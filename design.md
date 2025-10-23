@@ -1,7 +1,7 @@
 # Jellyfin Playlist Modal Plugin - Design Document
 
-**Status**: v1.0.0 Production Release ✅
-**Last Updated**: 2025-10-22
+**Status**: v1.0.1 Hotfix Release ✅
+**Last Updated**: 2025-10-23
 
 ## Project Overview
 
