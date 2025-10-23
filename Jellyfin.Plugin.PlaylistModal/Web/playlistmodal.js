@@ -27,6 +27,7 @@
 
     // State
     let currentModal = null;
+    let currentPlaylistId = null;
     let playlistItems = [];
     let unwatchedItems = [];
     let playlistInfo = null;
@@ -153,6 +154,9 @@
      */
     async function showPlaylistModal(playlistId) {
         console.log('[PlaylistModal] Showing modal for playlist:', playlistId);
+
+        // Store playlist ID globally for later use
+        currentPlaylistId = playlistId;
 
         // Fetch playlist info first
         try {
@@ -835,12 +839,12 @@
 		controls.innerHTML = `
 			<button class="playlist-modal-btn" id="playlistModalWatchBtn">🎬 Play it!</button>
 			<button class="playlist-modal-btn" id="playlistModalRerollBtn">🎲 Reroll</button>
-			<button class="playlist-modal-btn secondary" id="playlistModalCloseBtn">Close</button>
+			<button class="playlist-modal-btn secondary" id="playlistModalShowListBtn2">🎞️ Show List</button>
 		`;
 
         const watchBtn = document.getElementById('playlistModalWatchBtn');
 		const rerollBtn = document.getElementById('playlistModalRerollBtn');
-        const closeBtn = document.getElementById('playlistModalCloseBtn');
+        const showListBtn2 = document.getElementById('playlistModalShowListBtn2');
 
         watchBtn.addEventListener('click', () => {
             navigateToItem(winner.Id);
@@ -855,8 +859,8 @@
 			runSlotAnimation();
 		});
 
-        closeBtn.addEventListener('click', () => {
-            closeModal();
+        showListBtn2.addEventListener('click', () => {
+            handleShowList(currentPlaylistId);
         });
 
 		// Move focus to the new primary action
@@ -933,7 +937,11 @@
     function handleShowList(playlistId) {
         console.log('[PlaylistModal] Show List selected');
         closeModal();
-        window.location.href = '/web/index.html#!/list.html?type=Playlist&parentId=' + playlistId;
+        // Navigate to playlist details page (same as navigateToItem)
+        const ApiClient = window.ApiClient;
+        const serverId = ApiClient.serverId ? ApiClient.serverId() : ApiClient.serverInfo().Id;
+        const playlistUrl = '/web/index.html#!/details?id=' + playlistId + '&serverId=' + serverId;
+        window.location.href = playlistUrl;
     }
 
     // Initialize when DOM is ready
