@@ -13,8 +13,8 @@
         "changelog": "Hotfix: Restore configuration UI and client script injection after namespace rename.",
         "targetAbi": "10.8.0.0",
         "sourceUrl": "https://github.com/ztffn/Jellyfin-Roulette/releases/download/v1.0.1/Jellyfin.Plugin.Roulette.zip",
-        "checksum": "b5ffeefddfb89454f690f4c58a673272",
-        "timestamp": "2025-10-23T17:45:00Z"
+        "checksum": "122e88c733d0338791e4c0f3f92c585b",
+        "timestamp": "2025-10-24T05:59:09Z"
       },
       {
         "version": "1.0.0.0",
