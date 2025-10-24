@@ -6,7 +6,7 @@
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**🎰 A Jellyfin plugin that plays a random item from your playlists.**
+**A Jellyfin plugin that plays a random item from your playlists.**
 
 Click a playlist, hit "Surprise Me," and watch as movie posters spin past before landing on your next unwatched item!
 
@@ -24,7 +24,9 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 - **Non-invasive** - JavaScript injection pattern, doesn't modify Jellyfin core files
 
 ## 🎥 Preview
- ![usage gif](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteDemo.gif) 
+https://github.com/user-attachments/assets/7842878e-5216-4fef-ade5-87691595680a
+
+
  
 ## 🛠️ Installation
 
@@ -50,7 +52,7 @@ Click a playlist, hit "Surprise Me," and watch as movie posters spin past before
 4. Restart Jellyfin
 5. Hard refresh your browser
 
-## 🎮 Usage
+## 🎰 Usage
 
 1. Navigate to any playlist in Jellyfin
 2. A modal appears with two buttons:
