@@ -1,7 +1,7 @@
 # Jellyfin-Roulette
  ![plugin banner](https://github.com/ztffn/Jellyfin-Roulette/blob/main/screenshots/playlistRouletteIconHeader.png) 
  
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-1.0.2-blue)
 ![Jellyfin](https://img.shields.io/badge/jellyfin-10.8%2B-purple)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -46,7 +46,7 @@ https://github.com/user-attachments/assets/7842878e-5216-4fef-ade5-87691595680a
 1. Download `Jellyfin.Plugin.Roulette.dll` from [Releases](https://github.com/ztffn/Jellyfin-Roulette/releases)
 2. Create plugin directory:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/Jellyfin-Roulette_1.0.1.0/
+   mkdir -p /path/to/jellyfin/config/plugins/Jellyfin-Roulette_1.0.2.0/
    ```
 3. Copy the DLL to the directory
 4. Restart Jellyfin

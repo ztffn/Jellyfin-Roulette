@@ -1,6 +1,6 @@
 /**
  * Jellyfin Playlist Modal Plugin - Client Side Script
- * Version 1.0.1 - Namespace-safe embedded resources hotfix
+ * Version 1.0.2 - Dynamic web client injection path resolution
  *
  * This script intercepts playlist clicks and shows an animated modal with two options:
  * 1. Surprise Me - Slot machine animation revealing a random unwatched item
@@ -10,7 +10,7 @@
 (function() {
     'use strict';
 
-    console.log('[Roulette] Plugin loaded (v1.0.1)');
+    console.log('[Roulette] Plugin loaded (v1.0.2)');
 
 	// Animation configuration (overridden by server-provided RouletteConfig if present)
 	const config = {
@@ -50,7 +50,7 @@
 		close: injectedCfg && injectedCfg.CloseText ? injectedCfg.CloseText : 'Close'
 	};
 
-	const clientVersion = '1.0.1';
+	const clientVersion = '1.0.2';
 
     // State
     let currentModal = null;

@@ -26,11 +26,13 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         "/jellyfin/jellyfin-web/index.html",
         "/usr/share/jellyfin/web/index.html",
         "/usr/lib/jellyfin/bin/jellyfin-web/index.html",
+        "/usr/lib/jellyfin/web/index.html",
         "/config/jellyfin-web/index.html",
         "C:\\Program Files\\Jellyfin\\Server\\jellyfin-web\\index.html",
         "/app/jellyfin/jellyfin-web/index.html"
     };
 
+    private readonly IApplicationPaths _applicationPaths;
     private readonly ILogger<Plugin> _logger;
 
     /// <summary>
@@ -46,6 +48,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         : base(applicationPaths, xmlSerializer)
     {
         Instance = this;
+        _applicationPaths = applicationPaths;
         _logger = logger;
 
         // Inject JavaScript on plugin load
@@ -78,17 +81,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         _logger.LogInformation("Attempting to inject JavaScript into web client");
 
         // Try to find the web client index.html
-        string? webClientPath = null;
-        foreach (var path in PossibleWebPaths)
-        {
-            _logger.LogDebug("Checking for web client at: {Path}", path);
-            if (File.Exists(path))
-            {
-                webClientPath = path;
-                _logger.LogInformation("Found web client index.html at: {Path}", path);
-                break;
-            }
-        }
+        var webClientPath = ResolveWebClientIndexPath();
 
         if (webClientPath == null)
         {
@@ -213,5 +206,141 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         }
 
         return resourceName;
+    }
+
+    private string? ResolveWebClientIndexPath()
+    {
+        var candidates = new List<string>();
+        var directoriesToScan = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void AddFileCandidate(string? path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            try
+            {
+                var normalized = Path.GetFullPath(path);
+                if (visited.Add(normalized))
+                {
+                    candidates.Add(normalized);
+                    var directory = Path.GetDirectoryName(normalized);
+                    if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
+                    {
+                        directoriesToScan.Add(directory);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Skipping invalid candidate path {Path}", path);
+            }
+        }
+
+        void AddDirectoryCandidates(string? directory)
+        {
+            if (string.IsNullOrWhiteSpace(directory))
+            {
+                return;
+            }
+
+            try
+            {
+                var normalizedDirectory = Path.GetFullPath(directory);
+                if (!Directory.Exists(normalizedDirectory))
+                {
+                    return;
+                }
+
+                AddFileCandidate(Path.Combine(normalizedDirectory, "index.html"));
+                AddFileCandidate(Path.Combine(normalizedDirectory, "jellyfin-web", "index.html"));
+                AddFileCandidate(Path.Combine(normalizedDirectory, "web", "index.html"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Skipping invalid directory candidate {Directory}", directory);
+            }
+        }
+
+        foreach (var path in PossibleWebPaths)
+        {
+            _logger.LogDebug("Checking candidate from hard-coded list: {Path}", path);
+            AddFileCandidate(path);
+        }
+
+        try
+        {
+            var dynamicPaths = _applicationPaths.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType == typeof(string));
+
+            foreach (var property in dynamicPaths)
+            {
+                var value = property.GetValue(_applicationPaths) as string;
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+
+                _logger.LogDebug("ApplicationPaths.{Property} = {Value}", property.Name, value);
+
+                if (value.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                {
+                    AddFileCandidate(value);
+                }
+                else if (Path.HasExtension(value))
+                {
+                    var directory = Path.GetDirectoryName(value);
+                    AddDirectoryCandidates(directory);
+                }
+                else
+                {
+                    AddDirectoryCandidates(value);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Failed to enumerate dynamic application path candidates");
+        }
+
+        foreach (var candidate in candidates)
+        {
+            if (File.Exists(candidate))
+            {
+                _logger.LogInformation("Found web client index.html at: {Path}", candidate);
+                return candidate;
+            }
+        }
+
+        foreach (var directory in directoriesToScan)
+        {
+            try
+            {
+                var match = Directory.EnumerateFiles(directory, "index.html", SearchOption.AllDirectories)
+                    .FirstOrDefault(File.Exists);
+                if (!string.IsNullOrWhiteSpace(match))
+                {
+                    _logger.LogInformation(
+                        "Found web client index.html via directory scan in {Directory}: {Path}",
+                        directory,
+                        match);
+                    return match;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Skipping directory scan due to error in {Directory}", directory);
+            }
+        }
+
+        _logger.LogWarning(
+            "Unable to locate index.html. Candidate files evaluated: {Candidates}",
+            string.Join(", ", candidates));
+
+        return null;
     }
 }
