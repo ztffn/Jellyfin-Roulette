@@ -52,6 +52,8 @@ https://github.com/user-attachments/assets/7842878e-5216-4fef-ade5-87691595680a
 4. Restart Jellyfin
 5. Hard refresh your browser
 
+Need help? See the new [Troubleshooting guide](TROUBLESHOOTING.md).
+
 ## 🎰 Usage
 
 1. Navigate to any playlist in Jellyfin
