@@ -58,7 +58,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to inject JavaScript into web client");
+            _logger.LogError(ex, "[Roulette][ERROR] Failed to inject JavaScript into web client");
         }
     }
 
@@ -78,7 +78,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// </summary>
     private void InjectJavaScript()
     {
-        _logger.LogInformation("Attempting to inject JavaScript into web client");
+        _logger.LogInformation("[Roulette][INFO] Attempting to inject JavaScript into web client");
 
         // Try to find the web client index.html
         var webClientPath = ResolveWebClientIndexPath();
@@ -86,9 +86,9 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         if (webClientPath == null)
         {
             _logger.LogWarning(
-                "Web client index.html not found in any known location. Tried: {Paths}",
+                "[Roulette][WARN] Web client index.html not found in any known location. Tried: {Paths}",
                 string.Join(", ", PossibleWebPaths));
-            _logger.LogWarning("JavaScript injection skipped. Plugin will not function until web client is found.");
+            _logger.LogWarning("[Roulette][WARN] JavaScript injection skipped. Plugin will not function until web client is found.");
             return;
         }
 
@@ -98,7 +98,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         // Check if script is already injected
         if (indexHtml.Contains(ScriptMarker, StringComparison.Ordinal))
         {
-            _logger.LogInformation("JavaScript already injected, skipping");
+            _logger.LogInformation("[Roulette][INFO] JavaScript already injected, skipping");
             return;
         }
 
@@ -113,7 +113,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
-            _logger.LogError("Failed to find embedded resource stream: {ResourceName}", resourceName ?? "(null)");
+            _logger.LogError("[Roulette][ERROR] Failed to find embedded resource stream: {ResourceName}", resourceName ?? "(null)");
             return;
         }
 
@@ -157,16 +157,16 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         try
         {
             File.WriteAllText(webClientPath, modifiedHtml);
-            _logger.LogInformation("Successfully injected JavaScript into web client at: {Path}", webClientPath);
+            _logger.LogInformation("[Roulette][INFO] Successfully injected JavaScript into web client at: {Path}", webClientPath);
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogError(ex, "Permission denied writing to: {Path}. Plugin may need special Docker volume mount.", webClientPath);
-            _logger.LogError("See plugin documentation for Docker installation instructions.");
+            _logger.LogError(ex, "[Roulette][ERROR] Permission denied writing to: {Path}. Plugin may need special Docker volume mount.", webClientPath);
+            _logger.LogError("[Roulette][ERROR] See plugin documentation for Docker installation instructions.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to write modified index.html to: {Path}", webClientPath);
+            _logger.LogError(ex, "[Roulette][ERROR] Failed to write modified index.html to: {Path}", webClientPath);
         }
     }
 
@@ -178,7 +178,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
         if (resourceName == null)
         {
-            _logger.LogError("Configuration page resource not found. Configuration UI will be unavailable.");
+            _logger.LogError("[Roulette][ERROR] Configuration page resource not found. Configuration UI will be unavailable.");
             return Array.Empty<PluginPageInfo>();
         }
 
@@ -200,7 +200,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         if (resourceName == null)
         {
             _logger.LogError(
-                "Unable to locate an embedded resource ending with \"{Suffix}\". Available resources: {Resources}",
+                "[Roulette][ERROR] Unable to locate an embedded resource ending with \"{Suffix}\". Available resources: {Resources}",
                 suffix,
                 string.Join(", ", resources));
         }
@@ -236,7 +236,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Skipping invalid candidate path {Path}", path);
+                _logger.LogDebug(ex, "[Roulette][DEBUG] Skipping invalid candidate path {Path}", path);
             }
         }
 
@@ -261,13 +261,13 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Skipping invalid directory candidate {Directory}", directory);
+                _logger.LogDebug(ex, "[Roulette][DEBUG] Skipping invalid directory candidate {Directory}", directory);
             }
         }
 
         foreach (var path in PossibleWebPaths)
         {
-            _logger.LogDebug("Checking candidate from hard-coded list: {Path}", path);
+            _logger.LogDebug("[Roulette][DEBUG] Checking candidate from hard-coded list: {Path}", path);
             AddFileCandidate(path);
         }
 
@@ -285,7 +285,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
                     continue;
                 }
 
-                _logger.LogDebug("ApplicationPaths.{Property} = {Value}", property.Name, value);
+                _logger.LogDebug("[Roulette][DEBUG] ApplicationPaths.{Property} = {Value}", property.Name, value);
 
                 if (value.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 {
@@ -304,14 +304,14 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Failed to enumerate dynamic application path candidates");
+            _logger.LogDebug(ex, "[Roulette][DEBUG] Failed to enumerate dynamic application path candidates");
         }
 
         foreach (var candidate in candidates)
         {
             if (File.Exists(candidate))
             {
-                _logger.LogInformation("Found web client index.html at: {Path}", candidate);
+                _logger.LogInformation("[Roulette][INFO] Found web client index.html at: {Path}", candidate);
                 return candidate;
             }
         }
@@ -325,7 +325,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
                 if (!string.IsNullOrWhiteSpace(match))
                 {
                     _logger.LogInformation(
-                        "Found web client index.html via directory scan in {Directory}: {Path}",
+                        "[Roulette][INFO] Found web client index.html via directory scan in {Directory}: {Path}",
                         directory,
                         match);
                     return match;
@@ -333,12 +333,12 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Skipping directory scan due to error in {Directory}", directory);
+                _logger.LogDebug(ex, "[Roulette][DEBUG] Skipping directory scan due to error in {Directory}", directory);
             }
         }
 
         _logger.LogWarning(
-            "Unable to locate index.html. Candidate files evaluated: {Candidates}",
+            "[Roulette][WARN] Unable to locate index.html. Candidate files evaluated: {Candidates}",
             string.Join(", ", candidates));
 
         return null;
