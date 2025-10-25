@@ -52,7 +52,7 @@ https://github.com/user-attachments/assets/7842878e-5216-4fef-ade5-87691595680a
 4. Restart Jellyfin
 5. Hard refresh your browser
 
-Need help? See the new [Troubleshooting guide](TROUBLESHOOTING.md).
+Need help? See the [Troubleshooting guide](TROUBLESHOOTING.md). Or open an [Issue](https://github.com/ztffn/Jellyfin-Roulette/issues)
 
 ## 🎰 Usage
 
@@ -79,7 +79,7 @@ Access configuration from **Dashboard → Plugins → Roulette**:
 
 ## 🔄 Compatibility
 
-- **Jellyfin**: 10.8.0 and above (⚠️ Not yet tested on 10.11)
+- **Jellyfin**: 10.8.0 and above. (Including 10.11)
 - **Platform**: Docker (Linux), Native Linux, Windows, macOS
 - **Browsers**: Chrome, Firefox, Safari, Edge
 - **Mobile**: Responsive design for all screen sizes
