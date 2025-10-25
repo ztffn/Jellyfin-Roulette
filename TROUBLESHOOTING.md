@@ -77,4 +77,4 @@ Collect the following and open a GitHub issue:
 - Browser console output (if any)
 - Details about your install (Docker compose snippet, service account, etc.)
 
-With that info we can quickly identify what’s blocking the injection. Good luck, and may your playlists always spin in your favor! 🎲
+With that info open up a new [issue](https://github.com/ztffn/Jellyfin-Roulette/issues) and I'll try to help you.
